@@ -1,0 +1,91 @@
+body{
+    font-family:sans-serif
+}
+
+.sidebar {
+    flex: 1;
+    background-color: #336b87;
+    /* border-right: 1px solid #2a3132; */
+    box-shadow: 8px 0px 7px -3px rgba(0,0,0,0.28);
+    position: relative;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #295469;
+    height: 50px;
+    padding: 10px;
+    justify-content: space-between;
+    color: #ddddf7;
+}
+
+.logo {
+    font-weight: bold;
+}
+
+.user {
+    display: flex;
+    gap: 10px;
+}
+
+.navbar-image {
+    background-color: #ddddf7;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+.navbar-button {
+    background-color: #387999;
+    color: #ddddf7;
+    font-size: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.search{
+    border-bottom: 1px solid gray;
+}
+
+.searchForm {
+    padding: 10px;
+}
+
+.search-input {
+    background-color: transparent;
+    border: none;
+    color: white;
+    outline: none;
+    padding-bottom: 6px;
+}
+
+.search-input::placeholder{
+    color: lightgrey;
+}
+
+.userChat {
+    padding: 11px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+.userChat:hover{
+    background-color: #295469;  
+}
+
+.search-image{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.userChatInfo span {
+    font-size: 18px;
+    font-weight: 500;
+}

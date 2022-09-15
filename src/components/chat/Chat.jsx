@@ -1,9 +1,10 @@
 import React from 'react'
+import "./styles.css"
 
 export const Chat = () => {
   return (
-    <>
-        <h1>Chat</h1>
-    </>
+    <div className='chat'>
+      Chat
+    </div>
   )
 }
