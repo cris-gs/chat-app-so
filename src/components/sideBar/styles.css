@@ -100,12 +100,15 @@
 }
 
 @media(max-width: 480px) { /* mobile */
-
-  }
+    .navbar{
+        justify-content: space-between !important;
+    }
+}
   
-  @media(max-width: 768px) { /* tablet */
+@media(max-width: 768px) { /* tablet */
     .navbar{
         justify-content: center;
+        
     }
 
     .logo{
@@ -114,9 +117,9 @@
     .user button{
         bottom: 10px;
     }
-  }
+}
   
-  @media(max-width: 1200px) { /* laptop */
+@media(max-width: 1200px) { /* laptop */
 
-  }
+}
   
