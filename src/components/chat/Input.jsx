@@ -79,7 +79,7 @@ export const Input = () => {
     <div className="input">
       <input 
         type="text" 
-        placeholder="Write Something.." 
+        placeholder="Write Some..." 
         onChange={event => setText(event.target.value)} 
         value={text}
       />
