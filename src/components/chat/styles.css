@@ -63,7 +63,8 @@
     max-width: max-content;
 }
 
-.messageContent img {
+.messageContent img,
+.messageContent video {
     width: 50%;
 }
 
@@ -91,7 +92,8 @@
     gap: 10px;
 }
 
-.owner-messageContent img {
+.owner-messageContent img,
+.owner-messageContent video {
     width: 50%;
 }
 
