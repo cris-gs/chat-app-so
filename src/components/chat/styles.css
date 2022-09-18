@@ -68,6 +68,10 @@
     width: 50%;
 }
 
+.messageContent audio {
+    width: 250px;
+}
+
 /* -------------------------------------------------- */
 
 .owner {
@@ -95,6 +99,10 @@
 .owner-messageContent img,
 .owner-messageContent video {
     width: 50%;
+}
+
+.owner-messageContent audio {
+    width: 250px;
 }
 
 /* -------------------------------------------------- */

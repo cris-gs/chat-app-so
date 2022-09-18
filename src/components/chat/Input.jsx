@@ -24,7 +24,7 @@ export const Input = () => {
   const handleSend = async() => {
     if(file){
 
-      const type = file.type.includes('video') ? 'video' : 'image';
+      const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
 
       const storageRef = ref(storage, uuid());
 

@@ -35,6 +35,7 @@ export const Message = ({ message }) => {
           <p>{message.text}</p>
           {message.type === 'image' && <img src={message.file} alt="" />}
           {message.type === 'video' && <video src={message.file} controls></video>}
+          {message.type === 'audio' && <audio src={message.file} controls></audio>}
         </div>
     </div>
   )
