@@ -139,3 +139,32 @@
     cursor: pointer;;
 }
 
+
+@media(max-width: 480px) { /* mobile */
+    .chat{
+        display: none;
+    }
+}
+
+@media(max-width: 834px) { /* tablet */
+    .input input{
+        font-size: 13px;
+    }
+
+    .send{
+        gap: 5px;
+    }
+
+    .send img{
+        height: 18px;
+    }
+
+    .send button{
+        padding: 5px 8px;
+
+    }
+}
+  
+@media(max-width: 1200px) { /* laptop */
+
+}

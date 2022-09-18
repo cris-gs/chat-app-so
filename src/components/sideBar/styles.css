@@ -24,6 +24,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-left: 5px;
 }
 
 .navbar-image {
@@ -97,3 +98,28 @@
     color: #ddddf7;
     margin: 1px;
 }
+
+@media(max-width: 480px) { /* mobile */
+    .navbar{
+        justify-content: space-between !important;
+    }
+}
+  
+@media(max-width: 768px) { /* tablet */
+    .navbar{
+        justify-content: center;
+        
+    }
+
+    .logo{
+        display: none;
+    }
+    .user button{
+        bottom: 10px;
+    }
+}
+  
+@media(max-width: 1200px) { /* laptop */
+
+}
+  
