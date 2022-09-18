@@ -32,6 +32,11 @@ export const ItemChat = () => {
 
   const handleSelect = (user) => {
     dispatch({ type: "CHANGE_USER", payload: user});
+    
+    if(window.innerWidth<=480){
+      document.getElementById('sidebar').style.display = 'none';
+      document.getElementById('chat').style.display = 'block';
+    }
   }
 
   return (
