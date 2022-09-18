@@ -63,8 +63,13 @@
     max-width: max-content;
 }
 
-.messageContent img {
+.messageContent img,
+.messageContent video {
     width: 50%;
+}
+
+.messageContent audio {
+    width: 250px;
 }
 
 /* -------------------------------------------------- */
@@ -91,8 +96,13 @@
     gap: 10px;
 }
 
-.owner-messageContent img {
+.owner-messageContent img,
+.owner-messageContent video {
     width: 50%;
+}
+
+.owner-messageContent audio {
+    width: 250px;
 }
 
 /* -------------------------------------------------- */

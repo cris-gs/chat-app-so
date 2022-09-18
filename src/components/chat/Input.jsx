@@ -1,5 +1,5 @@
 import { arrayUnion, doc, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
 import { useContext, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { ChatContext } from "../../context/ChatContext";
@@ -10,7 +10,7 @@ const icons = require.context('../../assets', true);
 export const Input = () => {
 
   const [text, setText] = useState("");
-  const [img, setImg] = useState(null);
+  const [file, setFile] = useState(null);
 
   const currentUser = {
     displayName: "Cristopher",
@@ -22,30 +22,26 @@ export const Input = () => {
   const { data } = useContext(ChatContext);
 
   const handleSend = async() => {
-    if(img){
+    if(file){
+
+      const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
 
       const storageRef = ref(storage, uuid());
 
-      const uploadTask = uploadBytesResumable(storageRef, img);
+      await uploadBytes(storageRef, file);
 
-      uploadTask.on(
-        (error) => {
-          console.log(error)
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            await updateDoc(doc(db, "chats", data.chatId), {
-              messages: arrayUnion({
-                id: uuid(),
-                text,
-                senderId: currentUser.uid,
-                date: Timestamp.now(),
-                img: downloadURL,
-              }),
-            });
-          });
-        }
-      );
+      const downloadURL = await getDownloadURL(storageRef);
+      
+      await updateDoc(doc(db, "chats", data.chatId), {
+        messages: arrayUnion({
+          id: uuid(),
+          text,
+          senderId: currentUser.uid,
+          date: Timestamp.now(),
+          file: downloadURL,
+          type
+        }),
+      });
     } else {
       await updateDoc(doc(db, "chats", data.chatId), {
         messages: arrayUnion({
@@ -72,7 +68,7 @@ export const Input = () => {
     });
 
     setText("");
-    setImg(null);
+    setFile(null);
   }
 
   return (
@@ -85,15 +81,14 @@ export const Input = () => {
       />
       <div className="send">
       <img src={icons('./microphone.svg')} alt="" />
-        <img src={icons('./clip.svg')} alt="" />
         <input 
           type="file" 
           style={{display:"none"}} 
           id="file" 
-          onChange={event => setImg(event.target.files[0])} 
+          onChange={event => setFile(event.target.files[0])} 
         />
         <label htmlFor="file">
-          <img src={icons('./photo.svg')} alt="" />
+          <img src={icons('./clip.svg')} alt="" />
         </label>
         <button onClick={handleSend}>Send</button>
       </div>

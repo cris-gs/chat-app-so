@@ -33,7 +33,9 @@ export const Message = ({ message }) => {
         </div>
         <div className={`${message.senderId !== currentUser.uid ? "messageContent" : "owner-messageContent"}`}>
           <p>{message.text}</p>
-          {message.img && <img src={message.img} alt="" />}
+          {message.type === 'image' && <img src={message.file} alt="" />}
+          {message.type === 'video' && <video src={message.file} controls></video>}
+          {message.type === 'audio' && <audio src={message.file} controls></audio>}
         </div>
     </div>
   )
