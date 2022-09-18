@@ -69,7 +69,7 @@
 
 /* -------------------------------------------------- */
 
-.message-owner {
+.owner {
     display: flex;
     flex-direction: row-reverse;
     gap: 20px;
@@ -89,6 +89,10 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.owner-messageContent img {
+    width: 50%;
 }
 
 /* -------------------------------------------------- */
