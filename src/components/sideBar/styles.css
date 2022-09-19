@@ -99,16 +99,16 @@
     margin: 1px;
 }
 
-@media(max-width: 480px) { /* mobile */
+@media(max-width: 581px) { /* mobile */
     .navbar{
         justify-content: space-between !important;
     }
 }
 
-@media(min-width: 480px) { /* mobile */
-    .sidebar {
+@media(min-width: 581px) { /* mobile */
+    /* .sidebar {
         display: block !important;
-    }
+    } */
 }
   
 @media(max-width: 768px) { /* tablet */

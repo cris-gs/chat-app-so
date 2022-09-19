@@ -20,7 +20,11 @@
     box-shadow: 3px 4px 11px 5px rgba(0,0,0,0.28); 
 }
 
-@media(max-width: 480px) { /* mobile */
+.close{
+    display: none !important;
+}
+
+@media(max-width: 581px) { /* mobile */
 
 }
 

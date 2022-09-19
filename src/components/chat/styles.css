@@ -2,15 +2,28 @@
     flex: 2;
 }
 
+.main-chatInfo{
+    display: grid;
+    grid-template-columns: 1fr 20fr;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #768588;
+}
+
 .chatInfo {
     height: 50px;
-    background-color: #768588;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px;
     color: white;
     font-weight: bold;
+}
+
+.img-back{
+    height: 24px;
+    cursor: pointer;
+    visibility: hidden
 }
 
 .chatIcons {
@@ -150,13 +163,18 @@
 }
 
 
-@media(max-width: 480px) { /* mobile */
+@media(max-width: 581px) { /* mobile */
+    .img-back{
+        visibility: visible
+    }
+
     .chat{
         display: none;
     }
 }
 
 @media(max-width: 834px) { /* tablet */
+
     .input input{
         font-size: 13px;
     }

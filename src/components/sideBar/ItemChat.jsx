@@ -1,7 +1,9 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "../../context/ChatContext";
+import { WindowContext } from "../../context/WindowContext";
 import { db } from "../../firebase";
+
 
 export const ItemChat = () => {
 
@@ -15,6 +17,8 @@ export const ItemChat = () => {
   }
   //const { currentUser } = useContext(AuthContext);
   const { dispatch } = useContext(ChatContext);
+
+  const { setStayWindow } = useContext(WindowContext);
 
   useEffect(() => {
     const getChats = () => {
@@ -30,13 +34,35 @@ export const ItemChat = () => {
     currentUser.uid && getChats();
   }, [currentUser.uid]);
 
+
+  /* const displayWindowSize = () => {
+    if(window.innerWidth>581){
+      setStayWindow({
+          sidebar: true,
+          chat: true  
+      })
+    }else{
+      setStayWindow({ sidebar: true, chat: false });
+      //document.getElementById("chat").style.display="block";
+    }
+  }
+    
+  // Attaching the event listener function to window's resize event
+  window.addEventListener("resize", displayWindowSize()); */
+
   const handleSelect = (user) => {
     dispatch({ type: "CHANGE_USER", payload: user});
-    
-    if(window.innerWidth<=480){
-      document.getElementById('sidebar').style.display = 'none';
-      document.getElementById('chat').style.display = 'block';
+
+    if(window.innerWidth>581){
+      setStayWindow({
+          sidebar: true,
+          chat: true  
+      })
+    }else{
+      setStayWindow({ sidebar: false, chat:true });
+      document.getElementById("chat").style.display="block";
     }
+    
   }
 
   return (
