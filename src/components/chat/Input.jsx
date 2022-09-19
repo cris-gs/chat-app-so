@@ -1,6 +1,7 @@
 import { arrayUnion, doc, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useContext, useState } from "react";
+import { RecordRTCPromisesHandler } from "recordrtc";
 import { v4 as uuid } from "uuid";
 import { ChatContext } from "../../context/ChatContext";
 import { db, storage } from "../../firebase";
@@ -11,6 +12,10 @@ export const Input = () => {
 
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
+
+  const [recording, setRecording] = useState(false);
+  const [recorder, setRecorder] = useState();
+  const [stream, setStream] = useState();
 
   const currentUser = {
     displayName: "Cristopher",
@@ -25,6 +30,7 @@ export const Input = () => {
     if(file){
 
       const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
+      console.log(file.type);
 
       const storageRef = ref(storage, uuid());
 
@@ -71,6 +77,29 @@ export const Input = () => {
     setFile(null);
   }
 
+  const handleRecording = async() => {
+    if(!recording) {
+      let stream2 = await navigator.mediaDevices.getUserMedia({
+        audio: true
+      });
+      const recorder2 = new RecordRTCPromisesHandler(stream2, {
+        type: "audio",
+      });
+      recorder2.startRecording();
+      setRecording(true);
+      setRecorder(recorder2);
+      setStream(stream2)
+    } else {
+      await recorder.stopRecording();
+      let audio = await recorder.getBlob();
+      setFile(audio)
+      setRecording(false);
+      stream.getTracks().forEach((track) => {
+        track.stop();
+      });
+    }
+  }
+
   return (
     <div className="input">
       <input 
@@ -80,7 +109,7 @@ export const Input = () => {
         value={text}
       />
       <div className="send">
-      <img src={icons('./microphone.svg')} alt="" />
+      <button className="recording-button" onClick={handleRecording}><img src={icons('./microphone.svg')} alt="" /></button>
         <input 
           type="file" 
           style={{display:"none"}} 

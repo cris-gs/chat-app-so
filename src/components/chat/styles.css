@@ -153,15 +153,20 @@
     color: #707070
 }
 
-.send button{
+.send button {
     border: none;
     border-radius: 4px;
     padding: 10px 15px;
     color: white;
     background-color: #a26769;
-    cursor: pointer;;
+    cursor: pointer;
 }
 
+/* -------------------------------------------------- */
+.send .recording-button {
+    background-color: white;
+    padding: 0;
+}
 
 @media(max-width: 581px) { /* mobile */
     .img-back{
