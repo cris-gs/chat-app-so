@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button, Card } from "react-bootstrap";
+import { Form, Button, Card, Container } from "react-bootstrap";
 
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
@@ -10,13 +10,14 @@ import { auth, storage, db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
 
 
-// import { useNavigate, Link } from "react-router-dom";
+ import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
   const [err, setErr] = useState(false);
   // loading 
   const [loading, setLoading] = useState(false);
-  // const navigate = useNavigate();
+
+  const navigate = useNavigate();
 
 
   const handleSubmit = async (e) => {
@@ -60,7 +61,8 @@ const Register = () => {
             // crear chat vacio para usuario en firestore
             await setDoc(doc(db, "userChats", res.user.uid), {});
 
-            // navigate("/");
+            // home page
+            navigate("/");
 
           } catch (err) {
             console.log(err);
@@ -78,6 +80,9 @@ const Register = () => {
 
   return (
     <>
+    <div style={{backgroundColor: "#F8F9FB"}}>
+    <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh" }}>
+    <div className="w-100" style={{ maxWidth: "400px" }}>
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">PepeChat</h2>
@@ -115,8 +120,13 @@ const Register = () => {
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">
-        Already have an account? Login
+        Already have an account? <Link to="/login">Login</Link>
       </div>
+
+      </div>
+            </Container>
+
+            </div>
     </>
   );
 };

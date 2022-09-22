@@ -1,24 +1,45 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 
-import "bootstrap/dist/css/bootstrap.min.css"
-import { Container } from "react-bootstrap";
-import Login from "./components/Login";
-import  Register  from './components/Register';
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import { useContext } from "react";
+import { AuthContext } from "./context/AuthContext";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
+
+  const {currentUser} = useContext(AuthContext) 
+
+  const ProtectedRoute = ({children}) => {
+    if (!currentUser){ 
+      return <Navigate to = "/login" />
+    }
+
+    return children
+  }
+
+  console.log(currentUser)
   return (
-    <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh" }}
-    >
-      <div className="w-100" style={{ maxWidth: "400px" }}>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/">
+        {/* protect home page */}
+          <Route index element={
+              <ProtectedRoute>
+                {/* <Home /> */}
+              </ProtectedRoute>
+            }
+          />
 
-      <Register />
-      </div>
+          <Route path="login" element = {<Login/>}/>
+          <Route path="register" element = {<Register/>}/>
 
 
-
-    </Container>
-
-
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
 export default App;
+
