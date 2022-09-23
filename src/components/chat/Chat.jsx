@@ -28,7 +28,7 @@ export const Chat = () => {
   return (
     <div className={`${stayWindow.chat ? 'chat':'close'}`} id='chat'>
       <div className='main-chatInfo'>
-        <img className='img-back' src={icons('./back.svg')} alt="" onClick={() => handleSelect()} />
+        <img className='img-back' src={icons('./back.svg')} alt="" onClick={ handleSelect } />
         <div className="chatInfo">
           <span>{ data.user?.displayName }</span>
           <div className="chatIcons">

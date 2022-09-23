@@ -2,12 +2,13 @@
     flex: 2;
 }
 
+
 .main-chatInfo{
     display: grid;
     grid-template-columns: 1fr 20fr;
     align-items: center;
     justify-content: space-between;
-    background-color: #768588;
+    background-color: white;   
 }
 
 .chatInfo {
@@ -16,7 +17,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    color: white;
+    color: black;
     font-weight: bold;
 }
 
@@ -36,7 +37,7 @@
     cursor: pointer;
 }
 .messages {
-    background-color: #DDDDF7;
+    background-color: #F8F9FB;
     padding: 10px;
     height: calc(100% - 140px);
     overflow-y: scroll;
@@ -51,7 +52,7 @@
 .messageInfo {
     display: flex;
     flex-direction: column;
-    color: #768588;
+    color: #a8a9a8;
     font-weight: 300;
 }
 
@@ -70,10 +71,11 @@
 }
 
 .messageContent p {
-    background-color: #768588;
+    background-color: #ebeaea;
     padding: 10px 20px;
     border-radius: 0px 10px 10px 10px;
     max-width: max-content;
+    color: #a8a9a8;
 }
 
 .messageContent img,
@@ -95,7 +97,7 @@
 }
 
 .owner-messageContent p {
-    background-color: #a26769;
+    background-color: #017bff;
     padding: 10px 20px;
     border-radius: 10px 0px 10px 10px;
     max-width: max-content;
@@ -122,7 +124,7 @@
 
 .input {
     height: 30px;
-    background-color: white;
+    background-color: #ebeaea;
     padding: 10px;
     display: flex;
     align-items: center;
@@ -135,6 +137,7 @@
     outline: none;
     color: #2f2d52;
     font-size: 18px;
+    background-color: #ebeaea;
 }
 
 .input input::placeholder{
@@ -150,21 +153,21 @@
 .send img{
     height: 24px;
     cursor: pointer;
-    color: #707070
+    /* color: #707070 */
 }
 
 .send button {
     border: none;
-    border-radius: 4px;
-    padding: 10px 15px;
+    border-radius: 60px;
+    padding: 6px 8px;
     color: white;
-    background-color: #a26769;
+    background-color: #017bff;
     cursor: pointer;
 }
 
 /* -------------------------------------------------- */
 .send .recording-button {
-    background-color: white;
+    background-color: #ebeaea;
     padding: 0;
 }
 

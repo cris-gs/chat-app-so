@@ -119,7 +119,7 @@ export const Input = () => {
         <label htmlFor="file">
           <img src={icons('./clip.svg')} alt="" />
         </label>
-        <button onClick={handleSend}>Send</button>
+        <button onClick={handleSend}><img src={icons('./send.svg')} alt="" /></button>
       </div>
     </div>
   )
