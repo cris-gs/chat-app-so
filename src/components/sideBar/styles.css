@@ -113,13 +113,15 @@
         justify-content: center;
         
     }
-
-    .logo{
-        display: none;
-    }
-
+    
     .user button{
         bottom: 10px;
+    }
+}
+
+@media(max-width: 975px) { /* mobile */
+    .logo{
+        display: none;
     }
 }
   
