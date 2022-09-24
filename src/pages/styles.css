@@ -1,5 +1,6 @@
 * {
     margin: 0;
+    box-sizing: border-box;
 }
 .home {
     font-family: 'Roboto', sans-serif;
@@ -10,7 +11,7 @@
     align-items: center;
     justify-content: center;
 }  
-.container {
+.container-home {
     /* border: 1px solid #2a3132; */
     border-radius: 8px;
     width: 65%;
@@ -29,7 +30,7 @@
 }
 
 @media(max-width: 768px) { /* tablet */
-  .container{
+  .container-home{
       width: 90%;  
   }
 }

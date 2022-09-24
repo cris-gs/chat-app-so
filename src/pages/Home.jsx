@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <WindowContextProvider>
       <div className='home'>
-        <div className="container">
+        <div className="container-home">
           <Sidebar id="sidebar"/>
           <Chat id="chat"/>
         </div>

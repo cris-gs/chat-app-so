@@ -7,7 +7,7 @@ import Home from '../pages/Home';
 
 export const AppRouter = () => {
 
-  const {currentUser} = useContext(AuthContext) 
+  const {currentUser} = useContext(AuthContext);
 
   const ProtectedRoute = ({children}) => {
     if (!currentUser){ 

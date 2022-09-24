@@ -1,15 +1,10 @@
 import { useContext, useEffect, useRef } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
 
 export const Message = ({ message }) => {
 
-  const currentUser = {
-    displayName: "Cristopher",
-    email: "cristophergs2001@gmail.com",
-    photoURL: "https://yt3.ggpht.com/yti/AJo0G0laMUi3ob58OtLwqWkRRTfQKsg_3Z_scaLIlc1_9w=s88-c-k-c0x00ffffff-no-rj-mo",
-    uid: "nsJY2mrccVLGjEC8Y1ER"
-  }
-  //const { currentUser } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 
   const ref = useRef();
