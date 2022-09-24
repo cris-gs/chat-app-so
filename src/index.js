@@ -1,20 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from "react-router-dom";
+import { ChatApp } from "./ChatApp"
+import { ChatContextProvider } from './context/ChatContext';
 import { AuthContextProvider } from './context/AuthContext';
 
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-
-  
+ReactDOM.createRoot(document.getElementById('root')).render(
   <AuthContextProvider>
-    <React.StrictMode>
-      <React.StrictMode>
-        <App /> 
-      </React.StrictMode>
-    </React.StrictMode>
+    <ChatContextProvider>
+        <React.StrictMode>
+          <BrowserRouter>
+            <ChatApp/>
+          </BrowserRouter>
+        </React.StrictMode>
+    </ChatContextProvider> 
   </AuthContextProvider>
-
-
-);
+)

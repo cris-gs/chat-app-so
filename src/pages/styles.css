@@ -1,0 +1,39 @@
+* {
+    margin: 0;
+}
+.home {
+    font-family: 'Roboto', sans-serif;
+    background-color: #132836;
+    color: white;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}  
+.container {
+    /* border: 1px solid #2a3132; */
+    border-radius: 8px;
+    width: 65%;
+    height: 80%;
+    display: flex;
+    overflow: hidden; 
+    box-shadow: 3px 4px 11px 5px rgba(0,0,0,0.28); 
+}
+
+.close{
+    display: none !important;
+}
+
+@media(max-width: 581px) { /* mobile */
+
+}
+
+@media(max-width: 768px) { /* tablet */
+  .container{
+      width: 90%;  
+  }
+}
+
+@media(max-width: 1200px) { /* laptop */
+
+}
