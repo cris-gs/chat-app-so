@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../../firebase";
+import { AuthContext } from "../../context/AuthContext";
 
 export const Search = () => {
 
@@ -8,13 +9,7 @@ export const Search = () => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(false);
 
-  const currentUser = {
-    displayName: "Cristopher",
-    email: "cristophergs2001@gmail.com",
-    photoURL: "https://yt3.ggpht.com/yti/AJo0G0laMUi3ob58OtLwqWkRRTfQKsg_3Z_scaLIlc1_9w=s88-c-k-c0x00ffffff-no-rj-mo",
-    uid: "nsJY2mrccVLGjEC8Y1ER"
-  }
-  //const { currentUser } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
 
   const handleSearch = async() => {
     const q = query(

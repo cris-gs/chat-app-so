@@ -3,10 +3,11 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Login from '../pages/Login'
 import Register from '../pages/Register'
+import Home from '../pages/Home';
 
 export const AppRouter = () => {
 
-  const {currentUser} = useContext(AuthContext) 
+  const {currentUser} = useContext(AuthContext);
 
   const ProtectedRoute = ({children}) => {
     if (!currentUser){ 
@@ -23,7 +24,7 @@ export const AppRouter = () => {
             {/* protect home page */}
               <Route index element={
                   <ProtectedRoute>
-                    {/* <Home /> */}
+                    <Home />
                   </ProtectedRoute>
                 }
               />

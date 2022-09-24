@@ -1,16 +1,10 @@
 import { createContext, useContext, useReducer } from "react";
-//import { AuthContext } from "./AuthContext";
+import { AuthContext } from "./AuthContext";
 
 export const ChatContext = createContext();
 
 export const ChatContextProvider = ({ children }) => {
-  const currentUser = {
-    displayName: "Cristopher",
-    email: "cristophergs2001@gmail.com",
-    photoURL: "https://yt3.ggpht.com/yti/AJo0G0laMUi3ob58OtLwqWkRRTfQKsg_3Z_scaLIlc1_9w=s88-c-k-c0x00ffffff-no-rj-mo",
-    uid: "nsJY2mrccVLGjEC8Y1ER"
-  }
-  //const { currentUser } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   const INITIAL_STATE = {
     chatId: "null",
     user: {},

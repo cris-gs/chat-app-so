@@ -3,6 +3,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useContext, useState } from "react";
 import { RecordRTCPromisesHandler } from "recordrtc";
 import { v4 as uuid } from "uuid";
+import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
 import { db, storage } from "../../firebase";
 
@@ -17,13 +18,7 @@ export const Input = () => {
   const [recorder, setRecorder] = useState();
   const [stream, setStream] = useState();
 
-  const currentUser = {
-    displayName: "Cristopher",
-    email: "cristophergs2001@gmail.com",
-    photoURL: "https://yt3.ggpht.com/yti/AJo0G0laMUi3ob58OtLwqWkRRTfQKsg_3Z_scaLIlc1_9w=s88-c-k-c0x00ffffff-no-rj-mo",
-    uid: "nsJY2mrccVLGjEC8Y1ER"
-  }
-  //const { currentUser } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 
   const handleSend = async() => {
