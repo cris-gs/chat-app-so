@@ -48,8 +48,10 @@
     align-items: center;
 }
 
-.search{
-    background-color: #3497FF;
+.search {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .searchForm {
@@ -61,14 +63,24 @@
     border: none;
     color: white;
     outline: none;
+    width: 100%;
+    border-radius: 5px;
+    padding: 5px 10px;
 }
 
 .search-input::placeholder{
     color: #ddddf7
 }
 
+.search .not-found {
+    background-color: #017bff;
+    text-align: center;
+    color: #1D201F;
+    font-weight: bold;
+}
+
 .userChat {
-    padding: 11px;
+    padding: 10px;
     display: flex;
     align-items: center;
     gap: 10px;

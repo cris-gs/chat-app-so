@@ -1,11 +1,12 @@
+import { useContext, useState } from "react";
 import { arrayUnion, doc, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { useContext, useState } from "react";
-import { RecordRTCPromisesHandler } from "recordrtc";
 import { v4 as uuid } from "uuid";
+import CryptoJS from "crypto-js";
+import { RecordRTCPromisesHandler } from "recordrtc";
+import { db, storage } from "../../firebase";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
-import { db, storage } from "../../firebase";
 
 const icons = require.context('../../assets', true);
 
@@ -22,54 +23,58 @@ export const Input = () => {
   const { data } = useContext(ChatContext);
 
   const handleSend = async() => {
-    if(file){
+      if (text !== "") {
+        const encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();
 
-      const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
-      console.log(file.type);
+        if(file){
 
-      const storageRef = ref(storage, uuid());
+        const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
+        console.log(file.type);
 
-      await uploadBytes(storageRef, file);
+        const storageRef = ref(storage, uuid());
 
-      const downloadURL = await getDownloadURL(storageRef);
-      
-      await updateDoc(doc(db, "chats", data.chatId), {
-        messages: arrayUnion({
-          id: uuid(),
-          text,
-          senderId: currentUser.uid,
-          date: Timestamp.now(),
-          file: downloadURL,
-          type
-        }),
-      });
-    } else {
-      await updateDoc(doc(db, "chats", data.chatId), {
-        messages: arrayUnion({
-          id: uuid(),
-          text,
-          senderId: currentUser.uid,
-          date: Timestamp.now()
-        })
-      });
-    }
+        await uploadBytes(storageRef, file);
 
-    await updateDoc(doc(db, "userChats", currentUser.uid), {
-      [data.chatId + ".lastMessage"]: {
-        text,
-      },
-      [data.chatId + ".date"]: serverTimestamp(),
-    });
+        const downloadURL = await getDownloadURL(storageRef);
+        
+        await updateDoc(doc(db, "chats", data.chatId), {
+          messages: arrayUnion({
+            id: uuid(),
+            text: encryptedMessage,
+            senderId: currentUser.uid,
+            date: Timestamp.now(),
+            file: downloadURL,
+            type
+          }),
+        });
+        } else {
+          await updateDoc(doc(db, "chats", data.chatId), {
+            messages: arrayUnion({
+              id: uuid(),
+              text: encryptedMessage,
+              senderId: currentUser.uid,
+              date: Timestamp.now()
+            })
+          });
+        }
 
-    await updateDoc(doc(db, "userChats", data.user.uid), {
-      [data.chatId + ".lastMessage"]: {
-        text,
-      },
-      [data.chatId + ".date"]: serverTimestamp(),
-    });
+        await updateDoc(doc(db, "userChats", currentUser.uid), {
+          [data.chatId + ".lastMessage"]: {
+            text: encryptedMessage,
+          },
+          [data.chatId + ".date"]: serverTimestamp(),
+        });
 
-    setText("");
-    setFile(null);
+        await updateDoc(doc(db, "userChats", data.user.uid), {
+          [data.chatId + ".lastMessage"]: {
+            text: encryptedMessage,
+          },
+          [data.chatId + ".date"]: serverTimestamp(),
+        });
+
+        setText("");
+        setFile(null);
+      }
   }
 
   const handleRecording = async() => {
@@ -104,7 +109,7 @@ export const Input = () => {
         value={text}
       />
       <div className="send">
-      <button className="recording-button" onClick={handleRecording}><img src={icons('./microphone.svg')} alt="" /></button>
+      <button className="recording-button" onClick={handleRecording}><i className={`fa-solid fa-microphone ${recording ? 'recording' : ''}`}></i></button>
         <input 
           type="file" 
           style={{display:"none"}} 
@@ -112,7 +117,7 @@ export const Input = () => {
           onChange={event => setFile(event.target.files[0])} 
         />
         <label htmlFor="file">
-          <img src={icons('./clip.svg')} alt="" />
+          <i className="fa-solid fa-paperclip"></i>
         </label>
         <button onClick={handleSend}><img src={icons('./send.svg')} alt="" /></button>
       </div>

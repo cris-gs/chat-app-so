@@ -12,20 +12,30 @@ export const Search = () => {
   const { currentUser } = useContext(AuthContext);
 
   const handleSearch = async() => {
-    const q = query(
-      collection(db, "users"),
-      where("displayName", "==", username)
-    )
-
-    try {
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        setUser(doc.data())
-      });
-    } catch (error) {
-      setError(true);
+    setUser(null);
+    if (username !== "") {
+      const q = query(
+        collection(db, "users"),
+        where("displayName", "==", username)
+      )
+  
+      try {
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          setUser(doc.data())
+        });
+  
+        if (querySnapshot.empty) {
+          setError(true);
+        } else {
+          setError(false);
+        }
+      } catch (error) {
+        setError(true);
+      }
+    } else {
+      setError(false);
     }
-    console.log(currentUser)
   }
 
   const handleKey = (e) => {
@@ -77,7 +87,6 @@ export const Search = () => {
           onChange={ e=>setUsername(e.target.value) }
         />
       </div>
-      {error && <span>User not found!</span>}
       {user && <div className="userChat" onClick={ handleSelect }>
         <img 
           className="search-image" 
@@ -88,6 +97,7 @@ export const Search = () => {
           <span>{ user.displayName }</span>
         </div>
       </div>}
+      {error && <span className="not-found">User not found! 😧</span>}
     </div>
   )
 }

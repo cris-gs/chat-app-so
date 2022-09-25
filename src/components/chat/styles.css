@@ -8,7 +8,7 @@
     grid-template-columns: 1fr 20fr;
     align-items: center;
     justify-content: space-between;
-    background-color: white;   
+    background-color: white;
 }
 
 .chatInfo {
@@ -17,14 +17,18 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    color: black;
+    color: #1D201F;
     font-weight: bold;
+}
+
+.chatInfo span {
+    font-size: 1.2rem;
 }
 
 .img-back{
     height: 24px;
     cursor: pointer;
-    visibility: hidden
+    visibility: hidden;
 }
 
 .chatIcons {
@@ -154,6 +158,19 @@
     height: 24px;
     cursor: pointer;
     /* color: #707070 */
+}
+
+i {
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.fa-solid {
+    color: #707070;
+}
+
+.recording {
+    color: #EA3546;
 }
 
 .send button {

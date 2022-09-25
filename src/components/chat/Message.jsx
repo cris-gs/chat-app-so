@@ -1,4 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
+import CryptoJS from "crypto-js";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
 
@@ -12,6 +13,8 @@ export const Message = ({ message }) => {
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [message]);
+
+  const decryptedMessage = CryptoJS.AES.decrypt(message.text, '@pTSCA42vm94yl4EE4Tjb').toString(CryptoJS.enc.Utf8);
 
   return (
     <div ref={ref} className={`message ${message.senderId === currentUser.uid && "owner"}`}>
@@ -27,7 +30,7 @@ export const Message = ({ message }) => {
             <span>Just now</span>
         </div>
         <div className={`${message.senderId !== currentUser.uid ? "messageContent" : "owner-messageContent"}`}>
-          <p>{message.text}</p>
+          <p>{decryptedMessage}</p>
           {message.type === 'image' && <img src={message.file} alt="" />}
           {message.type === 'video' && <video src={message.file} controls></video>}
           {message.type === 'audio' && <audio src={message.file} controls></audio>}
