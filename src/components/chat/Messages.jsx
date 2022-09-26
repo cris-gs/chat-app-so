@@ -22,9 +22,9 @@ export const Messages = () => {
 
   return (
     <div className="messages">
-        <ModalOptions/>
-        {messages.map( message => (
-          <Message message={message} key={message.id} />
+      <ModalOptions/>
+        {Object.entries(messages)?.sort((a,b)=>a[1].date - b[1].date).map( message => (
+          <Message message={message[1]} key={message[0]} />
         ))}
     </div>
   )
