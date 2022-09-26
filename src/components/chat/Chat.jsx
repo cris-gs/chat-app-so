@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
 import { ChatContext } from '../../context/ChatContext';
 import { WindowContext } from '../../context/WindowContext';
+import { ModalsContext } from '../../context/ModalsContext';
 import { Input } from './Input';
 import { Messages } from './Messages';
 
 import "./styles.css"
+import { ModalBlock } from './modals/ModalBlock';
 const icons = require.context('../../assets', true);
 
 export const Chat = () => {
@@ -12,6 +14,8 @@ export const Chat = () => {
   const { data } = useContext(ChatContext);
 
   const { stayWindow, setStayWindow } = useContext(WindowContext);
+
+  const { stateModalOption, setStateModalOption } = useContext(ModalsContext);
 
   const handleSelect = () => {
     if(window.innerWidth>581){
@@ -25,6 +29,8 @@ export const Chat = () => {
     }
   }
 
+
+
   return (
     <div className={`${stayWindow.chat ? 'chat':'close'}`} id='chat'>
       <div className='main-chatInfo'>
@@ -32,13 +38,14 @@ export const Chat = () => {
         <div className="chatInfo">
           <span>{ data.user?.displayName }</span>
           <div className="chatIcons">
-            <img src={icons('./addFriend.svg')} alt="" />
-            <img src={icons('./more.svg')} alt="" />
+            {/* <img src={icons('./addFriend.svg')} alt="" /> */}
+            <img src={icons('./more.svg')} alt="" onClick={ () => setStateModalOption(!stateModalOption)} />
           </div>
         </div>
       </div>
       <Messages/>
       <Input/>
+      <ModalBlock/>
     </div>
   )
 }

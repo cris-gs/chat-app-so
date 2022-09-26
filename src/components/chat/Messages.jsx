@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "../../context/ChatContext";
 import { db } from "../../firebase";
 import { Message } from "./Message";
+import { ModalOptions } from "./modals/ModalOptions";
 
 export const Messages = () => {
 
@@ -21,6 +22,7 @@ export const Messages = () => {
 
   return (
     <div className="messages">
+        <ModalOptions/>
         {messages.map( message => (
           <Message message={message} key={message.id} />
         ))}
