@@ -46,8 +46,8 @@ export const ItemChat = () => {
   // Attaching the event listener function to window's resize event
   window.addEventListener("resize", displayWindowSize()); */
 
-  const handleSelect = (user) => {
-    dispatch({ type: "CHANGE_USER", payload: user});
+  const handleSelect = (user, lastMessage) => {
+    dispatch({ type: "CHANGE_USER", payload: {user, lastMessage}});
 
     if(window.innerWidth>581){
       setStayWindow({
@@ -74,7 +74,7 @@ export const ItemChat = () => {
         <div 
           className="userChat" 
           key={chat[0]} 
-          onClick={() => handleSelect(chat[1].userInfo)}
+          onClick={() => handleSelect(chat[1].userInfo, chat[1].lastMessage?.text)}
         >
           <img className="search-image" src={chat[1].userInfo.photoURL} alt="" />
           <div className="userChatInfo">

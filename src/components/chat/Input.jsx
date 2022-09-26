@@ -20,11 +20,12 @@ export const Input = () => {
   const [stream, setStream] = useState();
 
   const { currentUser } = useContext(AuthContext);
-  const { data } = useContext(ChatContext);
+  const { data, dispatch } = useContext(ChatContext);
 
   const handleSend = async() => {
       if (text !== "") {
         const encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();
+        const id = uuid();
 
         if(file){
 
@@ -38,23 +39,23 @@ export const Input = () => {
         const downloadURL = await getDownloadURL(storageRef);
         
         await updateDoc(doc(db, "chats", data.chatId), {
-          messages: arrayUnion({
-            id: uuid(),
+          ["messages" + `.${id}`]: {
+            id,
             text: encryptedMessage,
             senderId: currentUser.uid,
             date: Timestamp.now(),
             file: downloadURL,
             type
-          }),
+          }
         });
         } else {
           await updateDoc(doc(db, "chats", data.chatId), {
-            messages: arrayUnion({
-              id: uuid(),
+            ["messages" + `.${id}`]: {
+              id,
               text: encryptedMessage,
               senderId: currentUser.uid,
               date: Timestamp.now()
-            })
+            }
           });
         }
 
@@ -71,6 +72,8 @@ export const Input = () => {
           },
           [data.chatId + ".date"]: serverTimestamp(),
         });
+
+        dispatch({ type: "CHANGE_LASTMESSAGE", payload: encryptedMessage});
 
         setText("");
         setFile(null);
