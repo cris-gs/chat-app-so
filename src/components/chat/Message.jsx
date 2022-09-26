@@ -15,7 +15,8 @@ export const Message = ({ message }) => {
   }, [message]);
 
   const decryptedMessage = CryptoJS.AES.decrypt(message.text, '@pTSCA42vm94yl4EE4Tjb').toString(CryptoJS.enc.Utf8);
-
+  let dateMessage = message.date.toDate();
+  console.log(`${dateMessage.getFullYear()}/${dateMessage.getMonth()}/${dateMessage.getDate()}`);
   return (
     <div ref={ref} className={`message ${message.senderId === currentUser.uid && "owner"}`}>
         <div className="messageInfo">
@@ -27,7 +28,8 @@ export const Message = ({ message }) => {
               }
               alt="" 
             />
-            <span>Just now</span>
+            <span>{`${dateMessage.getFullYear()}/${dateMessage.getMonth()}/${dateMessage.getDate()}`}</span>
+            <span>{`${dateMessage.getHours()}:${dateMessage.getMinutes() > 9 ? dateMessage.getMinutes() : '0'+dateMessage.getMinutes()}`}</span>
         </div>
         <div className={`${message.senderId !== currentUser.uid ? "messageContent" : "owner-messageContent"}`}>
           <p>{decryptedMessage}</p>
