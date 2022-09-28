@@ -21,20 +21,24 @@
     box-shadow: 3px 4px 11px 5px rgba(0,0,0,0.28); 
 }
 
+.open{
+    display: block;
+}
+
 .close{
     display: none !important;
 }
 
-@media(max-width: 581px) { /* mobile */
+@media(max-width: 632px) { /* mobile */
 
 }
 
-@media(max-width: 798px) { /* tablet */
-  .container-home{
-      width: 90%;  
-  }
+@media(max-width: 834px) { /* tablet */
+
 }
 
 @media(max-width: 1200px) { /* laptop */
-
+    .container-home{
+        width: 90%;  
+    }
 }

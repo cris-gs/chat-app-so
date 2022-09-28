@@ -52,6 +52,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    border-bottom: 1px solid #2f2d52;
 }
 
 .searchForm {
@@ -110,7 +111,7 @@
     margin: 1px;
 }
 
-@media(max-width: 581px) { /* mobile */
+@media(max-width: 632px) { /* mobile */
     .navbar{
         justify-content: space-between !important;
     }
@@ -120,7 +121,7 @@
     }
 }
   
-@media(max-width: 768px) { /* tablet */
+@media(max-width: 834px) { /* tablet */
     .navbar{
         justify-content: center;
         
@@ -131,13 +132,11 @@
     }
 }
 
-@media(max-width: 975px) { /* mobile */
+
+@media(max-width: 1200px) { /* laptop */
     .logo{
         display: none;
     }
-}
-  
-@media(max-width: 1200px) { /* laptop */
 
 }
   

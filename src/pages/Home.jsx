@@ -1,21 +1,27 @@
 import { Chat } from "../components/chat/Chat"
 import { Sidebar } from "../components/sideBar/Sidebar"
 import { ModalsContextProvider } from "../context/ModalsContext"
-import { WindowContextProvider } from "../context/WindowContext"
 import "./styles.css"
 const Home = () => {
 
+  const changeWindow = () => {
+    if(window.innerWidth>632){
+      document.getElementById("sidebar").classList.remove("close");
+      document.getElementById("sidebar").classList.remove("open");
+      document.getElementById("chat").classList.remove("close");
+      document.getElementById("chat").classList.remove("open");
+    }
+  }
+  window.addEventListener("resize", changeWindow);  
   return (
-    <WindowContextProvider>
-      <div className='home'>
-        <div className="container-home">
-          <Sidebar id="sidebar"/>
-          <ModalsContextProvider>
-            <Chat id="chat"/>
-          </ModalsContextProvider>
-        </div>
+    <div className='home'>
+      <div className="container-home">
+        <Sidebar id="sidebar"/>
+        <ModalsContextProvider>
+          <Chat id="chat"/>
+        </ModalsContextProvider>
       </div>
-    </WindowContextProvider>
+    </div>
   )
 }
 

@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "../../context/ChatContext";
 import { db } from "../../firebase";
 import { Message } from "./Message";
-import { ModalOptions } from "./modals/ModalOptions";
+
 
 export const Messages = () => {
 
@@ -22,7 +22,7 @@ export const Messages = () => {
 
   return (
     <div className="messages">
-      <ModalOptions/>
+      
         {Object.entries(messages)?.sort((a,b)=>a[1].date - b[1].date).map( message => (
           <Message message={message[1]} key={message[0]} />
         ))}
