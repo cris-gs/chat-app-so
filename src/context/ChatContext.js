@@ -22,12 +22,11 @@ export const ChatContextProvider = ({ children }) => {
               ? currentUser.uid + action.payload.user.uid
               : action.payload.user.uid + currentUser.uid,
         };
-        case "CHANGE_LASTMESSAGE":
-          return {
-            ...state,
-            lastMessage: action.payload
-          };
-
+      case "CHANGE_LASTMESSAGE":
+        return {
+          ...state,
+          lastMessage: action.payload
+        };
       default:
         return state;
     }
