@@ -47,8 +47,6 @@ export const Input = () => {
         dataIBlock = false
       }
 
-      console.log(`iBlock: ${dataIBlock}`)
-
       const newOwnerInfo =  {
         uid: data.user?.uid,
         displayName: data.user?.displayName,
