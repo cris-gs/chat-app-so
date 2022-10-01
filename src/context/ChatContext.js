@@ -27,7 +27,16 @@ export const ChatContextProvider = ({ children }) => {
             ...state,
             lastMessage: action.payload
           };
-
+        case "CHANGE_BLOCK":
+          return {
+            ...state,
+            user: action.payload,
+          };
+        case "CHANGE_IBLOCK":
+          return {
+            ...state,
+            user: action.payload,
+          };
       default:
         return state;
     }

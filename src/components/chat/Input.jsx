@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { doc, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuid } from "uuid";
 import CryptoJS from "crypto-js";
@@ -18,12 +18,33 @@ export const Input = () => {
   const [recording, setRecording] = useState(false);
   const [recorder, setRecorder] = useState();
   const [stream, setStream] = useState();
+  const [stateIBlock, setstateIBlock] = useState(false)
 
   const { currentUser } = useContext(AuthContext);
   const { data, dispatch } = useContext(ChatContext);
 
+
+
   const handleSend = async() => {
-      if (text !== "") {
+      await onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+        setstateIBlock(doc.data());
+      });
+      
+      const newOwnerInfo =  {
+        uid: data.user?.uid,
+        displayName: data.user?.displayName,
+        photoURL: data.user?.photoURL,
+        block: data.user?.block,
+        iBlock: ''
+      }
+
+      Object.entries(stateIBlock)?.map(IBlock => (
+        newOwnerInfo.iBlock=(IBlock[1].userInfo.iBlock)
+      ))
+
+      dispatch({ type: "CHANGE_IBLOCK", payload: newOwnerInfo });
+      if (text !== "" && data.user?.block === false &&  data.user?.iBlock === false) {
+
         const encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();
         const id = uuid();
 
@@ -74,10 +95,9 @@ export const Input = () => {
         });
 
         dispatch({ type: "CHANGE_LASTMESSAGE", payload: encryptedMessage});
-
-        setText("");
-        setFile(null);
       }
+      setText("");
+      setFile(null);
   }
 
   const handleRecording = async() => {

@@ -58,7 +58,7 @@ export const Message = ({ message }) => {
   }
   
   return (
-    <div ref={ref} className={`message ${message.senderId === currentUser.uid ? "owner" : ""}`}>
+      <div ref={ref} className={`message ${message.senderId === currentUser.uid ? "owner" : ""}`}>
         <div className="messageInfo">
             <img 
               src={
@@ -97,6 +97,8 @@ export const Message = ({ message }) => {
           {message.type === 'video' && <video src={message.file} controls></video>}
           {message.type === 'audio' && <audio src={message.file} controls></audio>}
         </div>
-    </div>
+      </div>
+
+    
   )
 }

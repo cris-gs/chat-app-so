@@ -7,6 +7,8 @@ import { ModalOptions } from "./modals/ModalOptions";
 
 import "./styles.css"
 import { ModalBlock } from './modals/ModalBlock';
+import { ModalSearch } from './modals/ModalSearch';
+import { ModalFilter } from './modals/ModalFilter';
 const icons = require.context('../../assets', true);
 
 export const Chat = () => {
@@ -42,6 +44,8 @@ export const Chat = () => {
       </div>
       <Messages/>
       <Input/>
+      <ModalFilter/>
+      <ModalSearch/>
       <ModalBlock/>
     </div>
   )
