@@ -8,7 +8,7 @@ import { Message } from "./Message";
 export const Messages = () => {
 
   const [messages, setMessages] = useState([]);
-  const { data, dispatch } = useContext(ChatContext);
+  const { data } = useContext(ChatContext);
 
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", data.chatId), (doc) => {
