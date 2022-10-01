@@ -18,7 +18,7 @@ export const Input = () => {
   const [recording, setRecording] = useState(false);
   const [recorder, setRecorder] = useState();
   const [stream, setStream] = useState();
-  const [stateIBlock, setstateIBlock] = useState(false)
+  const [stateIBlock, setstateIBlock] = useState([])
 
   const { currentUser } = useContext(AuthContext);
   const { data, dispatch } = useContext(ChatContext);
@@ -37,16 +37,17 @@ export const Input = () => {
         dataBlock = data.user?.block
       }
 
-      let dataIBlock = ''
-      if (data.user?.iBlock === undefined){
-        dataIBlock = false
-      }else{
-        dataIBlock = data.user?.iBlock
-      }
-
+      let dataIBlock = true
+      
       Object.entries(stateIBlock)?.map(IBlock => (
         dataIBlock=(IBlock[1].userInfo.iBlock)
       ))
+
+      if (dataIBlock === undefined){
+        dataIBlock = false
+      }
+
+      console.log(`iBlock: ${dataIBlock}`)
 
       const newOwnerInfo =  {
         uid: data.user?.uid,
@@ -63,7 +64,7 @@ export const Input = () => {
 
       dispatch({ type: "CHANGE_IBLOCK", payload: newOwnerInfo });
 
-      if (text !== "" && data.user?.block === false &&  data.user?.iBlock === false) {
+      if (text !== "" && data.user?.block === false &&  dataIBlock === false) {
 
         const encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();
         const id = uuid();
