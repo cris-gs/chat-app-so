@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { deleteField, doc, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
+import { deleteField, doc, onSnapshot, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuid } from "uuid";
 import CryptoJS from "crypto-js";
@@ -18,6 +18,7 @@ export const Input = () => {
   const [recording, setRecording] = useState(false);
   const [recorder, setRecorder] = useState();
   const [stream, setStream] = useState();
+  const [stateIBlock, setstateIBlock] = useState([])
 
   const [selfDestruction, setSelfDestruction] = useState(false);
   const [modalPopup, setModalPopup] = useState(false);
@@ -27,32 +28,71 @@ export const Input = () => {
   const { currentUser } = useContext(AuthContext);
   const { data, dispatch } = useContext(ChatContext);
 
+
+
   const handleSend = async() => {
-      if (text !== "") {
-        let encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();
+      await onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+        setstateIBlock(doc.data());
+      });
+
+      let dataBlock = ''
+      if (data.user?.block === undefined){
+        dataBlock = false
+      }else{
+        dataBlock = data.user?.block
+      }
+
+      let dataIBlock = true
+      
+      Object.entries(stateIBlock)?.map(IBlock => (
+        dataIBlock=(IBlock[1].userInfo.iBlock)
+      ))
+
+      if (dataIBlock === undefined){
+        dataIBlock = false
+      }
+
+      const newOwnerInfo =  {
+        uid: data.user?.uid,
+        displayName: data.user?.displayName,
+        photoURL: data.user?.photoURL,
+        block: dataBlock,
+        iBlock: ''
+      } 
+      newOwnerInfo.iBlock=dataIBlock
+
+      await updateDoc(doc(db, "userChats", currentUser.uid), {
+        [data.chatId + ".userInfo"]: newOwnerInfo
+      });
+
+      dispatch({ type: "CHANGE_IBLOCK", payload: newOwnerInfo });
+
+      if (text !== "" && data.user?.block === false &&  dataIBlock === false) {
+
+        const encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();
         const id = uuid();
 
-        if(file){
+        if(file) {
 
-        const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
-        console.log(file.type);
+          const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
+          console.log(file.type);
 
-        const storageRef = ref(storage, uuid());
+          const storageRef = ref(storage, uuid());
 
-        await uploadBytes(storageRef, file);
+          await uploadBytes(storageRef, file);
 
-        const downloadURL = await getDownloadURL(storageRef);
-        
-        await updateDoc(doc(db, "chats", data.chatId), {
-          ["messages" + `.${id}`]: {
-            id,
-            text: encryptedMessage,
-            senderId: currentUser.uid,
-            date: Timestamp.now(),
-            file: downloadURL,
-            type
-          }
-        });
+          const downloadURL = await getDownloadURL(storageRef);
+          
+          await updateDoc(doc(db, "chats", data.chatId), {
+            ["messages" + `.${id}`]: {
+              id,
+              text: encryptedMessage,
+              senderId: currentUser.uid,
+              date: Timestamp.now(),
+              file: downloadURL,
+              type
+            }
+          });
         } else {
           await updateDoc(doc(db, "chats", data.chatId), {
             ["messages" + `.${id}`]: {
@@ -96,6 +136,8 @@ export const Input = () => {
         setText("");
         setFile(null);
       }
+      setText("");
+      setFile(null);
   }
 
   const handleRecording = async() => {

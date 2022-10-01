@@ -1,16 +1,27 @@
 import { useContext } from "react";
+import { ChatContext } from "../../../context/ChatContext";
 import { ModalsContext } from "../../../context/ModalsContext";
 
 export const ModalOptions = () => {
-    const { stateModalOption, setStateModalOption } = useContext(ModalsContext);
-    const { stateModalBlock, setStateModalBlock } = useContext(ModalsContext);
+
+    const { data } = useContext(ChatContext);    
+    
+    const 
+        { 
+            stateModalOption, setStateModalOption, 
+            stateModalBlock, setStateModalBlock, 
+            stateModalSearch, setStateModalSearch,
+            stateModalFilter, setStateModalFilter 
+        } = useContext(ModalsContext);
 
     const handleFilter = () =>{
         setStateModalOption(!stateModalOption);
+        setStateModalFilter(!stateModalFilter);
     }
 
     const handleSearch = () =>{
         setStateModalOption(!stateModalOption);
+        setStateModalSearch(!stateModalSearch)
     }
 
     const handleBlock = () =>{
@@ -25,7 +36,7 @@ export const ModalOptions = () => {
             <div className="modalOptions">
                 <p onClick={handleFilter}>Filter files</p>
                 <p onClick={handleSearch}>Search messages</p>
-                <p className="block" onClick={handleBlock}>Block</p>
+                <p className="block" onClick={handleBlock}>{data.user?.block ? 'Unblock': 'Block'}</p>
             </div>
         </div>
         }
