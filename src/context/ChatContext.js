@@ -37,6 +37,7 @@ export const ChatContextProvider = ({ children }) => {
             ...state,
             user: action.payload,
           };
+      
       default:
         return state;
     }

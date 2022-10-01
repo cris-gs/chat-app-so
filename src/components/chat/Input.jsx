@@ -29,20 +29,40 @@ export const Input = () => {
       await onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
         setstateIBlock(doc.data());
       });
-      
+
+      let dataBlock = ''
+      if (data.user?.block === undefined){
+        dataBlock = false
+      }else{
+        dataBlock = data.user?.block
+      }
+
+      let dataIBlock = ''
+      if (data.user?.iBlock === undefined){
+        dataIBlock = false
+      }else{
+        dataIBlock = data.user?.iBlock
+      }
+
+      Object.entries(stateIBlock)?.map(IBlock => (
+        dataIBlock=(IBlock[1].userInfo.iBlock)
+      ))
+
       const newOwnerInfo =  {
         uid: data.user?.uid,
         displayName: data.user?.displayName,
         photoURL: data.user?.photoURL,
-        block: data.user?.block,
+        block: dataBlock,
         iBlock: ''
-      }
+      } 
+      newOwnerInfo.iBlock=dataIBlock
 
-      Object.entries(stateIBlock)?.map(IBlock => (
-        newOwnerInfo.iBlock=(IBlock[1].userInfo.iBlock)
-      ))
+      await updateDoc(doc(db, "userChats", currentUser.uid), {
+        [data.chatId + ".userInfo"]: newOwnerInfo
+      });
 
       dispatch({ type: "CHANGE_IBLOCK", payload: newOwnerInfo });
+
       if (text !== "" && data.user?.block === false &&  data.user?.iBlock === false) {
 
         const encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();

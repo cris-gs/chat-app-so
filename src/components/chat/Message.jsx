@@ -32,11 +32,24 @@ export const Message = ({ message }) => {
     await updateDoc(doc(db, "chats", data.chatId), {
       ["messages." + message.id]: deleteField()
     });
+
+    if(message.text === data.lastMessage) {
+      const encryptedMessage = CryptoJS.AES.encrypt('Se eliminó este mensaje', '@pTSCA42vm94yl4EE4Tjb').toString();
+
+      await updateDoc(doc(db, "userChats", currentUser.uid), {
+        [data.chatId + ".lastMessage"]: {
+          text: encryptedMessage
+        }
+      });
+
+      dispatch({ type: "CHANGE_LASTMESSAGE", payload: encryptedMessage});
+    }
   }
 
   const handleCancel = () => {
     setUpdateMessage(false);
   }
+  
   const handleSaveMessage = async() => {
     const encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();
 

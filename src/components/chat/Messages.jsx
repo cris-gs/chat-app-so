@@ -8,14 +8,7 @@ import { Message } from "./Message";
 export const Messages = () => {
 
   const [messages, setMessages] = useState([]);
-  const { data  } = useContext(ChatContext);
-
- /*  const newUserInfo =  {
-    uid: currentUser.uid,
-    displayName: currentUser.displayName,
-    photoURL: currentUser.photoURL,
-    iBlock: currentUser.iBlock
-  } */
+  const { data } = useContext(ChatContext);
 
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", data.chatId), (doc) => {
