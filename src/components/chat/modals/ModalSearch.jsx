@@ -1,9 +1,62 @@
+import { useState } from "react";
 import { useContext } from "react";
+import CryptoJS from "crypto-js";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../../firebase";
 import { ModalsContext } from "../../../context/ModalsContext";
+import { ChatContext } from "../../../context/ChatContext";
+import { ShowMessages } from "./ShowMessages";
 const icons = require.context('../../../assets', true);
 export const ModalSearch = () => {
 
   const { stateModalSearch, setStateModalSearch } = useContext(ModalsContext);
+  const { data } = useContext(ChatContext);
+  
+  const [messages, setMessages] = useState([])
+  const [phrase, setPhrase] = useState("");
+  const [showMessages, setShowMessages] = useState([])
+  const [error, setError] = useState(false)
+
+  const search = async() => {
+    setMessages(null);
+    await onSnapshot(doc(db, "chats", data.chatId), (doc) => {
+      setMessages(doc.data());
+    });
+    
+    Object.entries(messages)?.map( message => (
+      handleSearch(message[1])
+    ))
+  }
+  const handleSearch = (message) => {
+    let listShowMessages = []
+    if(phrase !== ""){
+      Object.entries(message).sort((a,b)=>a[1].date - b[1].date).forEach((oneMessage) => {
+        let decryptedMessage = CryptoJS.AES.decrypt(oneMessage[1].text, '@pTSCA42vm94yl4EE4Tjb').toString(CryptoJS.enc.Utf8)
+        if(decryptedMessage.toLowerCase().includes(phrase)){
+          listShowMessages = [...listShowMessages, oneMessage]
+        }
+      })
+      setShowMessages(listShowMessages)
+      if(listShowMessages.length === 0){
+        setError(true)
+      }else{
+        setError(false)
+      }
+    }else{
+      setError(false)
+      setShowMessages(listShowMessages)
+    }
+  }
+
+  const handleBack = () => {
+    setStateModalSearch(!stateModalSearch)
+    const listEmpty = []
+    setShowMessages(listEmpty)
+  }
+
+  const handleKey = (e) => {
+    e.code === "Enter" && search();
+  }
 
   return (
     <>
@@ -11,15 +64,24 @@ export const ModalSearch = () => {
         <div className="containerModal">
           <div className="ModalSearch">
             <div className="ModalSearch-input">
-              <img className='img-darkBack' src={icons('./darkBack.svg')} alt="" onClick={ () => setStateModalSearch(!stateModalSearch)}/>
+              <img className='img-darkBack' src={icons('./darkBack.svg')} alt="" onClick={ handleBack }/>
               <input 
                 type="text" 
                 className="search-input" 
                 placeholder="Search for a message" 
-                /* onKeyDown={ handleKey } 
-                onChange={ e=>setUsername(e.target.value) } */
+                onKeyDown={ handleKey } 
+                onChange={ e=>setPhrase(e.target.value) }
               />
             </div>
+            {!error 
+              ?
+              <div className="messages-search">
+                {showMessages.map( message => (<ShowMessages message={message[1]} key={message[0]}/>))}
+              </div>
+              :
+              <span className="not-found">Not found! 😧</span>
+            }
+            
           </div>
         </div>
       }

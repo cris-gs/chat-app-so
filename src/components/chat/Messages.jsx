@@ -17,7 +17,6 @@ export const Messages = () => {
   
     return () => {
       unSub()
-      //dispatch({ type: "CHANGE_IBLOCK", payload: newUserInfo});
     }
   }, [data.chatId]);
 
