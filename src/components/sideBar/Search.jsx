@@ -11,6 +11,10 @@ export const Search = () => {
 
   const { currentUser } = useContext(AuthContext);
 
+  const test = async() => {
+    
+  }
+
   const handleSearch = async() => {
     setUser(null);
     if (username !== "") {
@@ -74,7 +78,12 @@ export const Search = () => {
     } catch (error) {
       console.log(error)
     }
-    
+    const q = query(
+      doc(db, "userChats", user.uid),
+      where(`${combinedId}.userInfo.uid`, "==", currentUser.uid)
+    )
+    const querySnapshot = await getDoc(q);
+    console.log(querySnapshot.data());
   }
 
   return (

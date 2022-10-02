@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { doc, onSnapshot, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
+import { deleteField, doc, onSnapshot, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuid } from "uuid";
 import CryptoJS from "crypto-js";
@@ -19,6 +19,11 @@ export const Input = () => {
   const [recorder, setRecorder] = useState();
   const [stream, setStream] = useState();
   const [stateIBlock, setstateIBlock] = useState([])
+
+  const [selfDestruction, setSelfDestruction] = useState(false);
+  const [modalPopup, setModalPopup] = useState(false);
+  const [time, setTime] = useState('Selected time');
+  const [error, setError] = useState(false);
 
   const { currentUser } = useContext(AuthContext);
   const { data, dispatch } = useContext(ChatContext);
@@ -67,27 +72,27 @@ export const Input = () => {
         const encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();
         const id = uuid();
 
-        if(file){
+        if(file) {
 
-        const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
-        console.log(file.type);
+          const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
+          console.log(file.type);
 
-        const storageRef = ref(storage, uuid());
+          const storageRef = ref(storage, uuid());
 
-        await uploadBytes(storageRef, file);
+          await uploadBytes(storageRef, file);
 
-        const downloadURL = await getDownloadURL(storageRef);
-        
-        await updateDoc(doc(db, "chats", data.chatId), {
-          ["messages" + `.${id}`]: {
-            id,
-            text: encryptedMessage,
-            senderId: currentUser.uid,
-            date: Timestamp.now(),
-            file: downloadURL,
-            type
-          }
-        });
+          const downloadURL = await getDownloadURL(storageRef);
+          
+          await updateDoc(doc(db, "chats", data.chatId), {
+            ["messages" + `.${id}`]: {
+              id,
+              text: encryptedMessage,
+              senderId: currentUser.uid,
+              date: Timestamp.now(),
+              file: downloadURL,
+              type
+            }
+          });
         } else {
           await updateDoc(doc(db, "chats", data.chatId), {
             ["messages" + `.${id}`]: {
@@ -114,6 +119,22 @@ export const Input = () => {
         });
 
         dispatch({ type: "CHANGE_LASTMESSAGE", payload: encryptedMessage});
+
+        if(selfDestruction) {
+          const number = time === '1 min' ? 60000 : time === '3 min' ? 180000 : 500000;
+          setSelfDestruction(false);
+          setTime('Selected time');
+
+          setTimeout(() => {
+            updateDoc(doc(db, "chats", data.chatId), {
+              ["messages." + id]: deleteField()
+            });
+          }, number);
+          
+        }
+
+        setText("");
+        setFile(null);
       }
       setText("");
       setFile(null);
@@ -142,6 +163,16 @@ export const Input = () => {
     }
   }
 
+  const handleSelfDestruction = () => {
+    if(time !== 'Selected time') {
+      setModalPopup(false);
+      setSelfDestruction(true);
+      setError(false);
+    } else {
+      setError(true);
+    }
+  }
+
   return (
     <div className="input">
       <input 
@@ -151,7 +182,30 @@ export const Input = () => {
         value={text}
       />
       <div className="send">
-      <button className="recording-button" onClick={handleRecording}><i className={`fa-solid fa-microphone ${recording ? 'recording' : ''}`}></i></button>
+        <i className={`fa-solid fa-fire ${selfDestruction ? 'self-destruction' : ''}`} onClick={() => setModalPopup(true)}></i>
+        <div className={`modal-popup ${modalPopup ? 'modal-popup--open' : ''}`}>
+          <div className="header">
+            <h2>Message self destruct</h2>
+            <label className="fa-solid fa-xmark" onClick={() => setModalPopup(false)}></label>
+          </div>
+          <div className="body-modal">
+            <p>Select how long the message will be deleted</p>
+            <div className="dropdown">
+              <div className="dropdown-select">
+                <span className="select">{time}</span>
+                <i className="fa-solid fa-caret-down"></i>
+              </div>
+              <div className="dropdown-list">
+                <div className="dropdown-list__item" onClick={() => setTime('1 min')}>1 min</div>
+                <div className="dropdown-list__item" onClick={() => setTime('3 min')}>3 min</div>
+                <div className="dropdown-list__item" onClick={() => setTime('5 min')}>5 min</div>
+              </div>
+            </div>
+            <p className={`error ${error ? 'has-error' : ''}`}>Obligatory field</p>
+          </div>
+          <label className="ok-btn" onClick={handleSelfDestruction}>Save</label>
+        </div>
+        <button className="recording-button" onClick={handleRecording}><i className={`fa-solid fa-microphone ${recording ? 'recording' : ''}`}></i></button>
         <input 
           type="file" 
           style={{display:"none"}} 

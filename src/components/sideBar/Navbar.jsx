@@ -11,7 +11,7 @@ export const Navbar = () => {
 
   return (
     <div className="navbar">
-      <span className="logo">SO Chat</span>
+      <span className="logo">PepeChat</span>
       <div className="user">
         <img className="navbar-image" src={currentUser.photoURL} alt="" />
         <span>{currentUser.displayName}</span>
