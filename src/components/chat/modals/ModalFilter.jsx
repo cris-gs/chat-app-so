@@ -67,7 +67,7 @@ export const ModalFilter = () => {
         <div className="containerModal">
           <div className="ModalSearch">
             <div className="ModalSearch-input">
-              <img className='img-darkBack' src={icons('./darkBack.svg')} alt="" onClick={ handleBack }/>
+              <img className='img-darkBack' src={icons('./back.svg')} alt="" onClick={ handleBack }/>
               <input 
                 type="date"
                 id="date-filter" 

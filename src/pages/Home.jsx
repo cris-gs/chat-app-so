@@ -16,8 +16,8 @@ const Home = () => {
   return (
     <div className='home'>
       <div className="container-home">
-        <Sidebar id="sidebar"/>
         <ModalsContextProvider>
+          <Sidebar id="sidebar"/>
           <Chat id="chat"/>
         </ModalsContextProvider>
       </div>

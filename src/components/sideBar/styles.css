@@ -26,13 +26,34 @@
     margin-left: 5px;
 }
 
+.ModalStadistics-title{
+    width: 270px;
+    display: flex;
+    flex-direction: row;
+    gap: 55px;
+    padding: 5px;
+    justify-content: flex-start;
+    align-items: center;
+    font-weight: bold;
+    font-size: 24px;
+    background-color: #3497FF;
+    border-radius: 5px;
+    color: white;
+}
+
+
 .navbar-image {
     background-color: #ddddf7;
     height: 24px;
     width: 24px;
     border-radius: 50%;
     object-fit: cover;
+    cursor: pointer;
   }
+
+.navbar-displayName{
+    cursor: pointer;  
+}
 
 .navbar-button {
     background-color: #017bff;
