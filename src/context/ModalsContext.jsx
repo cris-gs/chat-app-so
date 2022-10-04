@@ -12,6 +12,8 @@ export const ModalsContextProvider = ({ children }) => {
 
     const [stateModalBlock, setStateModalBlock] = useState(false);
 
+    const [stateModalStadistics, setStateModalStadistics] = useState(false);
+
     return(
         <ModalsContext.Provider value={
             { 
@@ -22,7 +24,9 @@ export const ModalsContextProvider = ({ children }) => {
                 stateModalSearch, 
                 setStateModalSearch,
                 stateModalBlock, 
-                setStateModalBlock 
+                setStateModalBlock,
+                stateModalStadistics, 
+                setStateModalStadistics 
             }
         }>
             { children }

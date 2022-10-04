@@ -7,6 +7,8 @@ import { ModalsContext } from "../../../context/ModalsContext";
 import { ChatContext } from "../../../context/ChatContext";
 import { ShowMessages } from "./ShowMessages";
 const icons = require.context('../../../assets', true);
+
+
 export const ModalSearch = () => {
 
   const { stateModalSearch, setStateModalSearch } = useContext(ModalsContext);
@@ -64,7 +66,7 @@ export const ModalSearch = () => {
         <div className="containerModal">
           <div className="ModalSearch">
             <div className="ModalSearch-input">
-              <img className='img-darkBack' src={icons('./darkBack.svg')} alt="" onClick={ handleBack }/>
+              <img className='img-darkBack' src={icons('./back.svg')} alt="" onClick={ handleBack }/>
               <input 
                 type="text" 
                 className="search-input" 
