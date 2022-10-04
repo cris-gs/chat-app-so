@@ -8,6 +8,9 @@ import { AuthContext } from "../../context/AuthContext";
 import { v4 as uuid } from "uuid";
 
 
+import swal from 'sweetalert';
+
+
 export const Reminders = () => {
 
     const [todos, setTodos] = useState([]);
@@ -18,6 +21,9 @@ export const Reminders = () => {
 
     const [date, setDate] = useState(new Date());
 
+
+        
+    function toTimestamp(strDate){ var datum = Date.parse(strDate); return datum/1000;} 
     // crear reminder a user 
     const createReminder = async (e) => {  
         const id = uuid();
@@ -33,9 +39,19 @@ export const Reminders = () => {
                 completed: false,
                 date
               }
-          });
+        });
+        console.log(toTimestamp(date)) 
+    
+        var intvalue = Math.trunc( Date.now()/1000 );
+        console.log(intvalue)
+        setTimeout(() => {
+            updateDoc(doc(db, "reminders", currentUser.uid), {
+              ["reminders" + `.${id}` + ".completed"]: true
+            });
+            swal(`Reminder! ${input}`);
+        }, (toTimestamp(date) - intvalue)*1000);
+        
         setInput('');
-
     } 
 
     // cargar los reminderes del user
@@ -46,7 +62,7 @@ export const Reminders = () => {
                 remindersArr = Object.values(doc.data().reminders);
                 setTodos(remindersArr);
             } else {
-                setTodos([]);
+                setTodos([]); 
             }
         });
     }
@@ -93,8 +109,8 @@ export const Reminders = () => {
                     type="datetime-local"
                     name="duedate"
                     placeholder="Due date"
-                    value={date}
                     onChange={(e) => setDate(e.target.value)}
+                    required
                     />
 
                     <Form.Control 
@@ -113,13 +129,20 @@ export const Reminders = () => {
                                     <Col sm={1}>
                                     <Form.Check type="checkbox" aria-label="Checkbox for following text input" checked={todo.completed ? 'checked' : ''} disabled/>
                                     </Col>
-                                    <Col sm={9}> 
-                                    <p onClick= {() => updateReminder(todo) }> {todo.text} </p>
+                                    <Col sm={9} onClick= {() => updateReminder(todo) }> 
+                                    <p > {todo.text} </p>
                                     </Col>
                                     <Col sm={2}> 
-                                    <Button variant= {!todo.completed ? "outline-danger" : "danger" } onClick={ () => deleteReminder(todo.id)}><i className="fa-regular fa-trash-can"></i></Button>
+                                        <Button variant= {!todo.completed ? "outline-danger" : "danger" } onClick={ () => deleteReminder(todo.id)}><i className="fa-regular fa-trash-can"></i></Button>
                                     </Col>
                                 </Row>
+                                <Row> 
+                                    <Col sm={12} onClick= {() => updateReminder(todo) }>
+                                    <p> { todo.date ? todo.date.split('T')[0] + ' ' + todo.date.split('T')[1].split('.')[0] : ''} </p>
+                                    </Col>
+                                </Row>
+
+
                             </Card.Body>
                         </Card>
                 ))}
