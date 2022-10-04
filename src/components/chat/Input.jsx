@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect} from "react";
 import { deleteField, doc, onSnapshot, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuid } from "uuid";
@@ -8,9 +8,14 @@ import { db, storage } from "../../firebase";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
 
+import { BotContext } from "../bots/BotContext";
 const icons = require.context('../../assets', true);
 
 export const Input = () => {
+
+
+
+
 
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
@@ -27,6 +32,47 @@ export const Input = () => {
 
   const { currentUser } = useContext(AuthContext);
   const { data, dispatch } = useContext(ChatContext);
+
+  const { botResponse, getTime, getWeather, getJoke, setReminder} = useContext(BotContext);
+
+  useEffect(() => {
+    if(botResponse){ 
+      setText(botResponse);
+    }
+  }, [botResponse])
+  
+
+
+
+
+  async function toggleBot() { 
+    let command = text;
+
+    let str = command;
+    let splitArr = str.split("$");
+
+    if (splitArr[0].includes("//hora")) {
+      const ubi = splitArr[1];
+      getTime(ubi);
+    }
+    if (splitArr[0].includes("//clima")) {
+      let lat = splitArr[1];
+      getWeather(lat);
+    }
+    if (splitArr[0].includes("//joke")) {
+      getJoke();
+    }
+    if (splitArr[0].includes("//reminder")) {
+      let text = splitArr[1];
+      let date = splitArr[2];
+      setReminder(text, date);
+    }
+
+
+  }
+
+
+
 
 
 
@@ -67,74 +113,83 @@ export const Input = () => {
 
       dispatch({ type: "CHANGE_IBLOCK", payload: newOwnerInfo });
 
-      if (text !== "" && data.user?.block === false &&  dataIBlock === false) {
 
-        const encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();
-        const id = uuid();
+      // arreglar despues en condicion :  user block -> && data.user?.block === false &&  dataIBlock === false
+      if (text !== "" ) {
 
-        if(file) {
-
-          const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
-          console.log(file.type);
-
-          const storageRef = ref(storage, uuid());
-
-          await uploadBytes(storageRef, file);
-
-          const downloadURL = await getDownloadURL(storageRef);
-          
-          await updateDoc(doc(db, "chats", data.chatId), {
-            ["messages" + `.${id}`]: {
-              id,
-              text: encryptedMessage,
-              senderId: currentUser.uid,
-              date: Timestamp.now(),
-              file: downloadURL,
-              type
-            }
-          });
-        } else {
-          await updateDoc(doc(db, "chats", data.chatId), {
-            ["messages" + `.${id}`]: {
-              id,
-              text: encryptedMessage,
-              senderId: currentUser.uid,
-              date: Timestamp.now()
-            }
-          });
+        // controlar bot
+        if (text.charAt(0) === "/" && text.charAt(1) === "/") {
+          toggleBot();
+          return;
         }
-
-        await updateDoc(doc(db, "userChats", currentUser.uid), {
-          [data.chatId + ".lastMessage"]: {
-            text: encryptedMessage,
-          },
-          [data.chatId + ".date"]: serverTimestamp(),
-        });
-
-        await updateDoc(doc(db, "userChats", data.user.uid), {
-          [data.chatId + ".lastMessage"]: {
-            text: encryptedMessage,
-          },
-          [data.chatId + ".date"]: serverTimestamp(),
-        });
-
-        dispatch({ type: "CHANGE_LASTMESSAGE", payload: encryptedMessage});
-
-        if(selfDestruction) {
-          const number = time === '1 min' ? 60000 : time === '3 min' ? 180000 : 500000;
-          setSelfDestruction(false);
-          setTime('Selected time');
-
-          setTimeout(() => {
-            updateDoc(doc(db, "chats", data.chatId), {
-              ["messages." + id]: deleteField()
+        else { 
+          const encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();
+          const id = uuid();
+  
+          if(file) {
+  
+            const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
+            console.log(file.type);
+  
+            const storageRef = ref(storage, uuid());
+  
+            await uploadBytes(storageRef, file);
+  
+            const downloadURL = await getDownloadURL(storageRef);
+            
+            await updateDoc(doc(db, "chats", data.chatId), {
+              ["messages" + `.${id}`]: {
+                id,
+                text: encryptedMessage,
+                senderId: currentUser.uid,
+                date: Timestamp.now(),
+                file: downloadURL,
+                type
+              }
             });
-          }, number);
-          
+          } else {
+            await updateDoc(doc(db, "chats", data.chatId), {
+              ["messages" + `.${id}`]: {
+                id,
+                text: encryptedMessage,
+                senderId: currentUser.uid,
+                date: Timestamp.now()
+              }
+            });
+          }
+  
+          await updateDoc(doc(db, "userChats", currentUser.uid), {
+            [data.chatId + ".lastMessage"]: {
+              text: encryptedMessage,
+            },
+            [data.chatId + ".date"]: serverTimestamp(),
+          });
+  
+          await updateDoc(doc(db, "userChats", data.user.uid), {
+            [data.chatId + ".lastMessage"]: {
+              text: encryptedMessage,
+            },
+            [data.chatId + ".date"]: serverTimestamp(),
+          });
+  
+          dispatch({ type: "CHANGE_LASTMESSAGE", payload: encryptedMessage});
+  
+          if(selfDestruction) {
+            const number = time === '1 min' ? 60000 : time === '3 min' ? 180000 : 500000;
+            setSelfDestruction(false);
+            setTime('Selected time');
+  
+            setTimeout(() => {
+              updateDoc(doc(db, "chats", data.chatId), {
+                ["messages." + id]: deleteField()
+              });
+            }, number);
+            
+          }
+  
+          setText("");
+          setFile(null);
         }
-
-        setText("");
-        setFile(null);
       }
       setText("");
       setFile(null);

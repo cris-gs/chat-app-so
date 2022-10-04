@@ -117,12 +117,11 @@ export const Reminders = () => {
                                     <p onClick= {() => updateReminder(todo) }> {todo.text} </p>
                                     </Col>
                                     <Col sm={2}> 
-                                    <Button variant="outline-danger" onClick={ () => deleteReminder(todo.id)}><i className="fa-regular fa-trash-can"></i></Button>
+                                    <Button variant= {!todo.completed ? "outline-danger" : "danger" } onClick={ () => deleteReminder(todo.id)}><i className="fa-regular fa-trash-can"></i></Button>
                                     </Col>
                                 </Row>
                             </Card.Body>
                         </Card>
-
                 ))}
             </Modal.Body>
             <Modal.Footer>
