@@ -3,99 +3,116 @@ import { signOut } from "firebase/auth";
 import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-//import { ModalsContext } from "../../context/ModalsContext";
+import { ModalsContext } from "../../context/ModalsContext";
 import { auth, db } from "../../firebase";
-//import { ModalStadistics } from "./modals/ModalStadistics";
+import { ModalStadistics } from "./modals/ModalStadistics";
 
 const icons = require.context('../../assets', true);
 
 export const Navbar = () => {
 
   const { currentUser } = useContext(AuthContext);
-  //const { stateModalStadistics, setStateModalStadistics } = useContext(ModalsContext);
+  const { stateModalStadistics, setStateModalStadistics } = useContext(ModalsContext);
   const [userChats, setuserChats] = useState([])
-  //const [chats, setChats] = useState([])
-  //const [messages, setMessages] = useState([])
-  //const [countMessages, setCountMessages] = useState([])
+  const [messages, setMessages] = useState([])
+  const [totalGeneral, seTotalGeneral] = useState([])
+
 
   const search = async() => {
-    //setMessages(null);
+    const cleanList = []
+    setuserChats(cleanList)
+    setMessages(cleanList)
+    seTotalGeneral(cleanList)
 
-    await onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+    
+    onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
       setuserChats(doc.data());
     });
+    
+
     let users = []
     Object.entries(userChats)?.map( userChat => (
       users = [...users, userChat]
     ))
-    //console.log(users)
 
-    //let listChats=[]
-    //setMessages([])
-    
-    //let cont = 0
-    
     const chatsC = collection(db, 'chats');
     const chatsSP = await getDocs(chatsC);
-  
-    chatsSP.docs.map((element) => (
-      //{ ...element.data(), id: element.id}
-      //console.log(element)
-      console.log(Object.entries(element.data())[0])
-      ))
-
-    //console.log(chats)
-
-    /* Object.entries(chats).map((chat)=>(
-      console.log(chat)
-    )) */
-
-    /* users.forEach((user) => {
-      onSnapshot(doc(db, "chats", user[0]), (doc) => {
-        Object.entries(doc.data()).forEach((message)=>{
-          //console.log(user[1].userInfo.displayName)
-          let totalAudio = 0
-          let totalImage = 0
-          let totalVideo = 0
-          let totalMessage = 0
-          Object.entries(message[1]).forEach((oneMessage)=>{
-            //console.log(oneMessage)
-            //console.log(oneMessage[1].type)
-            if(oneMessage[1].senderId === currentUser.uid && oneMessage[1].type === 'audio'){
-              //console.log("audio")
-              totalAudio++
-            }else if(oneMessage[1].senderId === currentUser.uid && oneMessage[1].type === 'image'){
-              //console.log("imagen")
-              totalImage++
-            }else if(oneMessage[1].senderId === currentUser.uid && oneMessage[1].type === 'video'){
-              //console.log("video")
-              totalVideo++
-            }else if(oneMessage[1].senderId === currentUser.uid && oneMessage[1].type === undefined ){
-              //console.log("mensaje")
-              totalMessage++
-            }
-          })
-          listChats =  [...listChats, {
-                        usuario: user[1].userInfo.displayName,
-                        photo: user[1].userInfo.photoURL,
-                        totalAudio: totalAudio,
-                        totalImage: totalImage,
-                        totalVideo: totalVideo,
-                        totalMessage: totalMessage
-                      }]
-          cont++
-          if(cont === users.length){
-            console.log(`Cont: ${cont}`)
-            console.log(listChats)
-            setMessages(...messages, listChats)
-            console.log(messages)
-          }
-        })
-      });
+    
+    let tempChats = []
+    users.forEach((user)=>{
+      tempChats = [...tempChats, [user[0], user[1]]]
     })
 
-    console.log(messages) */
+    chatsSP.docs.forEach((element) => {
+      for (var i = 0; i < tempChats.length; i++) {
+        if(tempChats[i][0] === element.id){
+          tempChats[i] = [...tempChats[i], element.data()]
+        }
+      }
 
+    })
+
+    let listChats=[]
+    setMessages(listChats)
+    seTotalGeneral(listChats)
+
+    let totalGeneralAudio = 0
+    let totalGeneralImage = 0
+    let totalGeneralVideo = 0
+    let totalGeneralMessage = 0
+    tempChats.forEach((chats) => {
+      //console.log(chats)
+      let totalAudio = 0
+      let totalImage = 0
+      let totalVideo = 0
+      let totalMessage = 0
+      let top = 0
+      Object.entries(chats[2]).forEach((message)=>{
+        //console.log(message)
+        Object.entries(message[1]).forEach((oneMessage)=> {
+          //console.log(oneMessage)
+          if(oneMessage[1].senderId === currentUser.uid && oneMessage[1].type === 'audio'){
+            //console.log("audio")
+            totalAudio++
+            top++
+          }else if(oneMessage[1].senderId === currentUser.uid && oneMessage[1].type === 'image'){
+            //console.log("imagen")
+            totalImage++
+            top++
+          }else if(oneMessage[1].senderId === currentUser.uid && oneMessage[1].type === 'video'){
+            //console.log("video")
+            totalVideo++
+            top++
+          }else if(oneMessage[1].senderId === currentUser.uid && oneMessage[1].type === undefined ){
+            //console.log("mensaje")
+            totalMessage++
+            top++
+          }
+        })
+      
+      })
+      totalGeneralAudio = totalGeneralAudio+totalAudio
+      totalGeneralImage = totalGeneralImage+totalImage
+      totalGeneralVideo = totalGeneralVideo+totalVideo
+      totalGeneralMessage = totalGeneralMessage+totalMessage
+      listChats =  [...listChats, {
+        user: chats[1].userInfo.displayName,
+        photo: chats[1].userInfo.photoURL,
+        top: top
+      }] 
+    });
+    //console.log(listChats)
+    setMessages(listChats)
+    seTotalGeneral({
+      totalGeneralAudio: totalGeneralAudio,
+      totalGeneralImage: totalGeneralImage,
+      totalGeneralVideo: totalGeneralVideo,
+      totalGeneralMessage: totalGeneralMessage
+    })
+
+    if(messages.length !== 0){
+      setStateModalStadistics(!stateModalStadistics)
+    }
   }
 
   return (
@@ -106,10 +123,7 @@ export const Navbar = () => {
         <span className="navbar-displayName" onClick={ search }>{currentUser.displayName}</span>
         <button className="navbar-button" onClick={() => signOut(auth)}><img src={icons('./logout.svg')} alt="" /></button>
       </div>
-      {/* {stateModalStadistics && 
-        Object.entries(messages)?.map( message => (
-          <ModalStadistics message={message[1]} key={message[0]}/>
-        ))} */}
+      {stateModalStadistics && <ModalStadistics messages={messages} totalGeneral={totalGeneral} />}
     </div>
   )
 }

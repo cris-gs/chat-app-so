@@ -27,6 +27,13 @@ export const Chat = () => {
     }
   }
 
+  const handleOptions = () => {
+    if(data.chatId !== "null"){
+      setStateModalOption(!stateModalOption)
+    }
+    
+  }
+
 
 
   return (
@@ -38,7 +45,7 @@ export const Chat = () => {
           <ModalOptions/>
           <div className="chatIcons">
             {/* <img src={icons('./addFriend.svg')} alt="" /> */}
-            <img src={icons('./more.svg')} alt="" onClick={ () => setStateModalOption(!stateModalOption)} />
+            <img src={icons('./more.svg')} alt="" onClick={ handleOptions } />
           </div>
         </div>
       </div>
