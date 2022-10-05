@@ -20,6 +20,8 @@ export const ModalSearch = () => {
   const [error, setError] = useState(false)
 
   const search = async() => {
+    setPhrase(document.getElementById("search-input-message").value)
+
     setMessages(null);
     await onSnapshot(doc(db, "chats", data.chatId), (doc) => {
       setMessages(doc.data());
@@ -62,7 +64,7 @@ export const ModalSearch = () => {
   }
 
   const handleKey = (e) => {
-    e.code === "Enter" && search();
+    e.code === 13 && search();
   }
 
   return (
@@ -75,10 +77,12 @@ export const ModalSearch = () => {
               <input 
                 type="text" 
                 className="search-input" 
+                id="search-input-message"
                 placeholder="Search for a message" 
                 onKeyDown={ handleKey } 
                 onChange={ e=>setPhrase(e.target.value) }
               />
+              <img className='img-darkBack' src={icons('./search.svg')} alt="" onClick={ search }/>
             </div>
             {!error 
               ?

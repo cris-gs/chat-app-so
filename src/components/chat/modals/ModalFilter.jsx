@@ -18,7 +18,7 @@ export const ModalFilter = () => {
 
   const filter = async() => {
     setFiles(null);
-    console.log(document.getElementById("date-filter").value)
+    //console.log(document.getElementById("date-filter").value)
     setDateFilter(document.getElementById("date-filter").value)
     await onSnapshot(doc(db, "chats", data.chatId), (doc) => {
       setFiles(doc.data());

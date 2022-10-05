@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../../firebase";
 import { AuthContext } from "../../context/AuthContext";
+const icons = require.context('../../assets', true);
 
 export const Search = () => {
 
@@ -12,6 +13,8 @@ export const Search = () => {
   const { currentUser } = useContext(AuthContext);
 
   const handleSearch = async() => {
+    setUsername(document.getElementById("search-input").value)
+
     setUser(null);
     if (username !== "") {
       const q = query(
@@ -40,7 +43,7 @@ export const Search = () => {
   }
 
   const handleKey = (e) => {
-    e.code === "Enter" && handleSearch();
+    e.code === 13 && handleSearch();
   }
 
   const handleSelect = async() => {
@@ -82,11 +85,14 @@ export const Search = () => {
         <input 
           type="text" 
           className="search-input" 
+          id="search-input"
           placeholder="Find a user" 
           onKeyDown={ handleKey } 
           onChange={ e=>setUsername(e.target.value) }
         />
+        <img className='img-darkBack' src={icons('./searchWhite.svg')} alt="" onClick={ handleSearch }/>
       </div>
+      
       {user && <div className="userChat" onClick={ handleSelect }>
         <img 
           className="search-image" 
