@@ -43,7 +43,7 @@ export const Search = () => {
   }
 
   const handleKey = (e) => {
-    e.code === 13 && handleSearch();
+    e.keyCode === 13 && handleSearch();
   }
 
   const handleSelect = async() => {

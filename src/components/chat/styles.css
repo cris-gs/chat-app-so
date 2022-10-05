@@ -507,6 +507,10 @@ i {
         left: 50%;
     }
 
+    .owner-messageContent input {
+        width: 120px;
+    }
+
 }
 
 @media(max-width: 834px) { /* tablet */

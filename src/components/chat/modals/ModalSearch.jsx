@@ -40,7 +40,7 @@ export const ModalSearch = () => {
 
       Object.entries(message).sort((a,b)=>a[1].date - b[1].date).forEach((oneMessage) => {
         let decryptedMessage = CryptoJS.AES.decrypt(oneMessage[1].text, '@pTSCA42vm94yl4EE4Tjb').toString(CryptoJS.enc.Utf8)
-        if(decryptedMessage.toLowerCase().includes(phrase)){
+        if(decryptedMessage.toLowerCase().includes(phrase.toLowerCase())){
           listShowMessages = [...listShowMessages, oneMessage]
         }
       })
@@ -64,7 +64,7 @@ export const ModalSearch = () => {
   }
 
   const handleKey = (e) => {
-    e.code === 13 && search();
+    e.keyCode === 13 && search();
   }
 
   return (
