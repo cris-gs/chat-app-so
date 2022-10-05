@@ -156,8 +156,12 @@ export const Input = () => {
         setFile(null);
       }
           
-    }else{
+    }else if(tempIBlock === true){
       swal("It could not",`${ data.user?.displayName } blocked you`,"warning");
+      setText("");
+      setFile(null);
+    }else{
+      swal("It could not","You must write something to be able to send","warning");
       setText("");
       setFile(null);
     }
