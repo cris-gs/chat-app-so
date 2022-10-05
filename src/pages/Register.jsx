@@ -61,6 +61,9 @@ const Register = () => {
             // crear chat vacio para usuario en firestore
             await setDoc(doc(db, "userChats", res.user.uid), {});
 
+            // crear reminders vacio para usuario en firestore 
+            await setDoc(doc(db, "reminders", res.user.uid), {});
+
             // home page
             navigate("/");
 

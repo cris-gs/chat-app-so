@@ -6,7 +6,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { ModalsContext } from "../../context/ModalsContext";
 import { auth, db } from "../../firebase";
 import { ModalStadistics } from "./modals/ModalStadistics";
-
+import {Reminders} from "../reminders/Reminders";
 const icons = require.context('../../assets', true);
 
 export const Navbar = () => {
@@ -119,8 +119,10 @@ export const Navbar = () => {
     <div className="navbar">
       <span className="logo">PepeChat</span>
       <div className="user">
+      <Reminders />
         <img className="navbar-image" src={currentUser.photoURL} alt="" onClick={ search } />
         <span className="navbar-displayName" onClick={ search }>{currentUser.displayName}</span>
+        
         <button className="navbar-button" onClick={() => signOut(auth)}><img src={icons('./logout.svg')} alt="" /></button>
       </div>
       {stateModalStadistics && <ModalStadistics messages={messages} totalGeneral={totalGeneral} />}
