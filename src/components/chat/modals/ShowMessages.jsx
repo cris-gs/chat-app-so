@@ -22,7 +22,7 @@ export const ShowMessages = ({ message }) => {
                     }
                     alt="" 
                 />
-                <span>{`${dateMessage.getFullYear()}/${dateMessage.getMonth()}/${dateMessage.getDate()}`}</span>
+                <span>{`${dateMessage.getFullYear()}/${dateMessage.getMonth()+1}/${dateMessage.getDate()}`}</span>
                 <span>{`${dateMessage.getHours()}:${dateMessage.getMinutes() > 9 ? dateMessage.getMinutes() : '0'+dateMessage.getMinutes()}`}</span>
             </div>
             

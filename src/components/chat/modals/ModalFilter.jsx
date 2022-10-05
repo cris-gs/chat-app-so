@@ -34,7 +34,7 @@ export const ModalFilter = () => {
     if(dateFilter !== ""){
       Object.entries(file).sort((a,b)=>a[1].date - b[1].date).forEach((onefile) => {
         let year = (onefile[1].date.toDate().getFullYear())
-        let month = (onefile[1].date.toDate().getMonth())
+        let month = (onefile[1].date.toDate().getMonth())+1
         let day = (onefile[1].date.toDate().getDate())
         if((onefile[1]?.type === 'image' || onefile[1]?.type === 'video') && dateFilter.includes(year) && dateFilter.includes(month) && dateFilter.includes(day)){
           listShowFiles = [...listShowFiles, onefile]

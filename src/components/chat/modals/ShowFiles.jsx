@@ -21,7 +21,7 @@ export const ShowFiles = ({file}) => {
                     }
                     alt="" 
                 />
-                <span>{`${dateFile.getFullYear()}/${dateFile.getMonth()}/${dateFile.getDate()}`}</span>
+                <span>{`${dateFile.getFullYear()}/${dateFile.getMonth()+1}/${dateFile.getDate()}`}</span>
                 <span>{`${dateFile.getHours()}:${dateFile.getMinutes() > 9 ? dateFile.getMinutes() : '0'+dateFile.getMinutes()}`}</span>
             </div>
             
