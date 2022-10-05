@@ -84,7 +84,7 @@ export const Input = () => {
       }
     })
 
-    if (text !== "" && data.user?.block === false &&  tempIBlock === false) {
+    if (text !== "" && (data.user?.block === false || data.user?.block === undefined) &&  tempIBlock === false) {
 
       if (text.charAt(0) === "/" && text.charAt(1) === "/") {
         toggleBot();
