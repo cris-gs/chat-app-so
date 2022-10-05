@@ -29,15 +29,20 @@ export const ModalSearch = () => {
       handleSearch(message[1])
     ))
   }
+
   const handleSearch = (message) => {
     let listShowMessages = []
+    //console.log(listShowMessages)
+    //console.log(phrase)
     if(phrase !== ""){
+
       Object.entries(message).sort((a,b)=>a[1].date - b[1].date).forEach((oneMessage) => {
         let decryptedMessage = CryptoJS.AES.decrypt(oneMessage[1].text, '@pTSCA42vm94yl4EE4Tjb').toString(CryptoJS.enc.Utf8)
         if(decryptedMessage.toLowerCase().includes(phrase)){
           listShowMessages = [...listShowMessages, oneMessage]
         }
       })
+      //console.log(listShowMessages)
       setShowMessages(listShowMessages)
       if(listShowMessages.length === 0){
         setError(true)

@@ -7,8 +7,11 @@ import { Message } from "./Message";
 
 export const Messages = () => {
 
-  const [messages, setMessages] = useState([]);
   const { data } = useContext(ChatContext);
+  
+  const [messages, setMessages] = useState([]);
+
+  
 
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", data.chatId), (doc) => {
@@ -19,6 +22,8 @@ export const Messages = () => {
       unSub()
     }
   }, [data.chatId]);
+
+  
 
   return (
     <div className="messages">
@@ -32,11 +37,11 @@ export const Messages = () => {
           </div>
         }
 
-        {data.user?.iBlock &&
+        {/* {tempIBlock &&
           <div className="infoBlock">
             <div className="infoBlock-Content"><p>{ data.user?.displayName } blocked you</p></div>
           </div>
-        }
+        } */}
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { deleteField, doc, onSnapshot, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
+import { collection, deleteField, doc, getDocs, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuid } from "uuid";
 import CryptoJS from "crypto-js";
@@ -7,6 +7,7 @@ import { RecordRTCPromisesHandler } from "recordrtc";
 import { db, storage } from "../../firebase";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
+import swal from 'sweetalert';
 
 const icons = require.context('../../assets', true);
 
@@ -18,7 +19,6 @@ export const Input = () => {
   const [recording, setRecording] = useState(false);
   const [recorder, setRecorder] = useState();
   const [stream, setStream] = useState();
-  const [stateIBlock, setstateIBlock] = useState([])
 
   const [selfDestruction, setSelfDestruction] = useState(false);
   const [modalPopup, setModalPopup] = useState(false);
@@ -28,116 +28,101 @@ export const Input = () => {
   const { currentUser } = useContext(AuthContext);
   const { data, dispatch } = useContext(ChatContext);
 
-
-
   const handleSend = async() => {
-      await onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
-        setstateIBlock(doc.data());
-      });
 
-      let dataBlock = ''
-      if (data.user?.block === undefined){
-        dataBlock = false
-      }else{
-        dataBlock = data.user?.block
+    const chatsC = collection(db, 'userChats');
+    const chatsSP = await getDocs(chatsC);
+
+    let tempUserChat = []
+    chatsSP.docs.forEach((element) => {
+      if(element.id === data.user?.uid){
+        tempUserChat = element.data()
       }
+    })
 
-      let dataIBlock = true
-      
-      Object.entries(stateIBlock)?.map(IBlock => (
-        dataIBlock=(IBlock[1].userInfo.iBlock)
-      ))
-
-      if (dataIBlock === undefined){
-        dataIBlock = false
+    let tempIBlock = false
+    Object.entries(tempUserChat).forEach((element) => {
+      if(element[0] === data.chatId){
+        if(element[1].userInfo.block === true){
+          tempIBlock = true
+        }
       }
+    })
 
-      const newOwnerInfo =  {
-        uid: data.user?.uid,
-        displayName: data.user?.displayName,
-        photoURL: data.user?.photoURL,
-        block: dataBlock,
-        iBlock: ''
-      } 
-      newOwnerInfo.iBlock=dataIBlock
+    if (text !== "" && data.user?.block === false &&  tempIBlock === false) {
+
+      const encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();
+      const id = uuid();
+
+      if(file) {
+
+        const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
+        console.log(file.type);
+
+        const storageRef = ref(storage, uuid());
+
+        await uploadBytes(storageRef, file);
+
+        const downloadURL = await getDownloadURL(storageRef);
+        
+        await updateDoc(doc(db, "chats", data.chatId), {
+          ["messages" + `.${id}`]: {
+            id,
+            text: encryptedMessage,
+            senderId: currentUser.uid,
+            date: Timestamp.now(),
+            file: downloadURL,
+            type
+          }
+        });
+      } else {
+        await updateDoc(doc(db, "chats", data.chatId), {
+          ["messages" + `.${id}`]: {
+            id,
+            text: encryptedMessage,
+            senderId: currentUser.uid,
+            date: Timestamp.now()
+          }
+        });
+      }
 
       await updateDoc(doc(db, "userChats", currentUser.uid), {
-        [data.chatId + ".userInfo"]: newOwnerInfo
+        [data.chatId + ".lastMessage"]: {
+          text: encryptedMessage,
+        },
+        [data.chatId + ".date"]: serverTimestamp(),
       });
 
-      dispatch({ type: "CHANGE_IBLOCK", payload: newOwnerInfo });
+      await updateDoc(doc(db, "userChats", data.user.uid), {
+        [data.chatId + ".lastMessage"]: {
+          text: encryptedMessage,
+        },
+        [data.chatId + ".date"]: serverTimestamp(),
+      });
 
-      if (text !== "" && data.user?.block === false &&  dataIBlock === false) {
+      dispatch({ type: "CHANGE_LASTMESSAGE", payload: encryptedMessage});
 
-        const encryptedMessage = CryptoJS.AES.encrypt(text, '@pTSCA42vm94yl4EE4Tjb').toString();
-        const id = uuid();
+      if(selfDestruction) {
+        const number = time === '1 min' ? 60000 : time === '3 min' ? 180000 : 500000;
+        setSelfDestruction(false);
+        setTime('Selected time');
 
-        if(file) {
-
-          const type = file.type.includes('video') ? 'video' : file.type.includes('image') ? 'image' : 'audio';
-          console.log(file.type);
-
-          const storageRef = ref(storage, uuid());
-
-          await uploadBytes(storageRef, file);
-
-          const downloadURL = await getDownloadURL(storageRef);
-          
-          await updateDoc(doc(db, "chats", data.chatId), {
-            ["messages" + `.${id}`]: {
-              id,
-              text: encryptedMessage,
-              senderId: currentUser.uid,
-              date: Timestamp.now(),
-              file: downloadURL,
-              type
-            }
+        setTimeout(() => {
+          updateDoc(doc(db, "chats", data.chatId), {
+            ["messages." + id]: deleteField()
           });
-        } else {
-          await updateDoc(doc(db, "chats", data.chatId), {
-            ["messages" + `.${id}`]: {
-              id,
-              text: encryptedMessage,
-              senderId: currentUser.uid,
-              date: Timestamp.now()
-            }
-          });
-        }
-
-        await updateDoc(doc(db, "userChats", currentUser.uid), {
-          [data.chatId + ".lastMessage"]: {
-            text: encryptedMessage,
-          },
-          [data.chatId + ".date"]: serverTimestamp(),
-        });
-
-        await updateDoc(doc(db, "userChats", data.user.uid), {
-          [data.chatId + ".lastMessage"]: {
-            text: encryptedMessage,
-          },
-          [data.chatId + ".date"]: serverTimestamp(),
-        });
-
-        dispatch({ type: "CHANGE_LASTMESSAGE", payload: encryptedMessage});
-
-        if(selfDestruction) {
-          const number = time === '1 min' ? 60000 : time === '3 min' ? 180000 : 500000;
-          setSelfDestruction(false);
-          setTime('Selected time');
-
-          setTimeout(() => {
-            updateDoc(doc(db, "chats", data.chatId), {
-              ["messages." + id]: deleteField()
-            });
-          }, number);
-          
-        }
-
-        setText("");
-        setFile(null);
+        }, number);
+        
       }
+
       setText("");
       setFile(null);
+    }else{;
+      swal("It could not",`${ data.user?.displayName } blocked you`,"warning");
+    }
+
+    setText("");
+    setFile(null);
   }
 
   const handleRecording = async() => {

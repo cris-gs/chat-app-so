@@ -1,9 +1,10 @@
 import { useContext } from "react";
-import { doc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { AuthContext } from "../../../context/AuthContext";
 import { ChatContext } from "../../../context/ChatContext";
 import { ModalsContext } from "../../../context/ModalsContext";
+import swal from 'sweetalert';
 
 export const ModalBlock = () => {
 
@@ -11,10 +12,30 @@ export const ModalBlock = () => {
   const { data, dispatch } = useContext(ChatContext);
   const { stateModalBlock, setStateModalBlock } = useContext(ModalsContext);
 
+
   const handleBlock = async() => {
     setStateModalBlock(!stateModalBlock);
 
-    if(!(data.user?.iBlock)){
+    const chatsC = collection(db, 'userChats');
+    const chatsSP = await getDocs(chatsC);
+
+    let tempUserChat = []
+    chatsSP.docs.forEach((element) => {
+      if(element.id === data.user?.uid){
+        tempUserChat = element.data()
+      }
+    })
+
+    let tempIBlock = false
+    Object.entries(tempUserChat).forEach((element) => {
+      if(element[0] === data.chatId){
+        if(element[1].userInfo.block === true){
+          tempIBlock = true
+        }
+      }
+    })
+
+    if(!tempIBlock){
       let block = (data.user?.block)
 
       const newOwnerInfo =  {
@@ -29,17 +50,8 @@ export const ModalBlock = () => {
       });
 
       dispatch({ type: "CHANGE_BLOCK", payload: newOwnerInfo });
-
-      const newUserInfo =  {
-        uid: currentUser.uid,
-        displayName: currentUser.displayName,
-        photoURL: currentUser.photoURL,
-        iBlock: !block
-      }
-
-      await updateDoc(doc(db, "userChats", data.user?.uid), {
-        [data.chatId + ".userInfo"]: newUserInfo
-      });
+    }else{;
+      swal("It could not",`${ data.user?.displayName } blocked you`,"warning");
     }
   }
 
