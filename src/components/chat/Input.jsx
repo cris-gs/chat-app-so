@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect} from "react";
-import { collection, doc, getDocs,  serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
+import { collection, deleteField, doc, getDocs,  serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuid } from "uuid";
 import CryptoJS from "crypto-js";
@@ -13,10 +13,6 @@ import { BotContext } from "../bots/BotContext";
 const icons = require.context('../../assets', true);
 
 export const Input = () => {
-
-
-
-
 
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
@@ -40,10 +36,6 @@ export const Input = () => {
       setText(botResponse);
     }
   }, [botResponse])
-  
-
-
-
 
   async function toggleBot() { 
     let command = text;
@@ -70,7 +62,6 @@ export const Input = () => {
 
 
   }
-
 
   const handleSend = async() => {
 
@@ -147,6 +138,19 @@ export const Input = () => {
           },
           [data.chatId + ".date"]: serverTimestamp(),
         });
+
+        if(selfDestruction) {
+          const number = time === '1 min' ? 60000 : time === '3 min' ? 180000 : 500000;
+          setSelfDestruction(false);
+          setTime('Selected time');
+  
+          setTimeout(() => {
+            updateDoc(doc(db, "chats", data.chatId), {
+              ["messages." + id]: deleteField()
+            });
+          }, number);
+
+        }
 
         setText("");
         setFile(null);
