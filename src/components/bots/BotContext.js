@@ -31,7 +31,7 @@ export const BotContextProvider = ({ children }) => {
           .then((response) => response.json())
           .then((response) => {
             fetch(
-              `http://api.timezonedb.com/v2.1/get-time-zone?key=SEVNR5J5MGZW&format=json&by=position&lat=${response.location.lat}&lng=${response.location.lon}`
+              `https://api.timezonedb.com/v2.1/get-time-zone?key=SEVNR5J5MGZW&format=json&by=position&lat=${response.location.lat}&lng=${response.location.lon}`
             )
               .then((response) => response.json())
               .then((response) => {
